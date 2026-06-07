@@ -1,0 +1,219 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Про ФК Вишневе</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Russo+One&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="about.css" />
+  <link rel="stylesheet" href="header.cinematic.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+  <!-- Cinematic Header Module -->
+  <script src="modules/cinematicHeader.js" defer></script>
+</head>
+
+<body>
+
+<!-- ── MENU BACKDROP ─────────────────────────────────────────── -->
+<div class="menu-backdrop" id="menuBackdrop"></div>
+
+<!-- ── HEADER ────────────────────────────────────────────────── -->
+<header class="header" id="mainHeader">
+  <div class="burger-container">
+    <a href="index.html" class="logo-block">
+      <img src="img/logo.png" alt="Логотип ФК Вишневе" class="club-logo" />
+      <span class="club-name">ФК Вишневе</span>
+    </a>
+    <div class="burger" id="burger" aria-label="Відкрити меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </div>
+    <nav class="menu" id="menu">
+      <ul>
+        <li><a href="index.html">Головна</a></li>
+        <li><a href="about.html" class="nav-active">Про нас</a></li>
+        <li class="has-submenu">
+          <div class="menu-item">
+            <a href="teams.html">Команди</a>
+            <span class="arrow">&#9662;</span>
+          </div>
+          <ul class="submenu">
+            <li><a href="team1.html?team=main">Головна команда</a></li>
+            <li><a href="team1.html?team=youth">Молодіжка</a></li>
+            <li><a href="team1.html?team=u-19">U-19</a></li>
+          </ul>
+        </li>
+        <li><a href="matches.html">Матчі</a></li>
+        <li><a href="news.html">Новини</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ── PAGE HERO ─────────────────────────────────────────────── -->
+<div class="about-hero">
+  <h1>Про ФК Вишневе</h1>
+  <p>Більш ніж чверть століття сили, честі та футбольної пристрасті</p>
+</div>
+
+<!-- ── HISTORY ────────────────────────────────────────────────── -->
+<section class="white-section">
+  <div class="section-content">
+    <h2 class="about-section-title">Наша історія</h2>
+    <p>Футбольний клуб «Вишневе» був заснований у 1998 році групою ентузіастів, яких об'єднала любов до футболу та бажання розвивати спорт у рідному місті.</p>
+    <p>За роки свого існування клуб пройшов шлях від аматорської команди до організації, яка пишається кількома чемпіонськими титулами і виховала десятки талановитих футболістів.</p>
+    <p>Сьогодні ФК «Вишневе» — це не просто футбольна команда, а справжня спортивна сім'я, яка об'єднує гравців усіх вікових категорій та тисячі відданих вболівальників.</p>
+  </div>
+</section>
+
+<!-- ── MISSION ────────────────────────────────────────────────── -->
+<section class="gray-section">
+  <div class="section-content">
+    <h2 class="about-section-title">Наша місія</h2>
+    <p>Розвивати футбол у нашому регіоні, виховувати молодих талантів та створювати умови для того, щоб кожен, хто любить цю гру, міг реалізувати свій потенціал.</p>
+    <p>Ми прагнемо бути не лише успішними на полі, але й відповідальними членами громади — підтримуємо молодіжний спорт, організовуємо соціальні ініціативи та сприяємо здоровому способу життя.</p>
+  </div>
+</section>
+
+<!-- ── STATS ───────────────────────────────────────────────────── -->
+<section class="white-section">
+  <div class="section-content">
+    <div class="stats-boxes">
+      <div class="stat-box">
+        <strong>26</strong>
+        <span>Років історії</span>
+      </div>
+      <div class="stat-box">
+        <strong>150+</strong>
+        <span>Гравців</span>
+      </div>
+      <div class="stat-box">
+        <strong>500+</strong>
+        <span>Матчів</span>
+      </div>
+      <div class="stat-box">
+        <strong>15К</strong>
+        <span>Фанатів</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── ACHIEVEMENTS ───────────────────────────────────────────── -->
+<section class="dark-section">
+  <div class="section-content">
+    <h2 class="about-section-title">Наші досягнення</h2>
+    <p class="section-subtitle">Гордимося нашими перемогами та трофеями</p>
+    <div class="achievements-grid">
+      <div class="achievement-card">
+        <span class="achievement-icon">🏆</span>
+        <strong>5</strong>
+        <p class="achievement-title">Чемпіон області</p>
+        <p>2018, 2019, 2020, 2022, 2023</p>
+      </div>
+      <div class="achievement-card">
+        <span class="achievement-icon">🥇</span>
+        <strong>3</strong>
+        <p class="achievement-title">Володар Кубка</p>
+        <p>2017, 2019, 2021</p>
+      </div>
+      <div class="achievement-card">
+        <span class="achievement-icon">⭐</span>
+        <strong>12+</strong>
+        <p class="achievement-title">Вихованці в збірних</p>
+        <p>Юнацькі та молодіжні збірні</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── Navigation ───────────────────────────────── */
+  const burger   = document.getElementById('burger');
+  const menu     = document.getElementById('menu');
+  const backdrop = document.getElementById('menuBackdrop');
+  const header   = document.getElementById('mainHeader');
+
+  function openMenu() {
+    menu.classList.add('active');
+    burger.classList.add('active');
+    backdrop.classList.add('active');
+    burger.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    menu.classList.remove('active');
+    burger.classList.remove('active');
+    backdrop.classList.remove('active');
+    burger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  burger.addEventListener('click', () => menu.classList.contains('active') ? closeMenu() : openMenu());
+  backdrop.addEventListener('click', closeMenu);
+  menu.querySelectorAll('a').forEach(l => l.addEventListener('click', closeMenu));
+
+  document.querySelectorAll('.has-submenu .arrow').forEach(arrow => {
+    arrow.addEventListener('click', e => {
+      e.stopPropagation();
+      arrow.closest('.has-submenu').classList.toggle('open');
+    });
+  });
+
+  let lastY = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    header.classList.toggle('hide',     y > lastY && y > 60);
+    header.classList.toggle('scrolled', y > 20);
+    lastY = y <= 0 ? 0 : y;
+  }, { passive: true });
+
+  /* ── GSAP scroll animations ───────────────────── */
+  window.addEventListener('load', () => {
+    if (typeof gsap === 'undefined') return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.querySelectorAll('section').forEach(sec => {
+      gsap.from(sec, {
+        scrollTrigger: { trigger: sec, start: 'top 82%', toggleActions: 'play none none none' },
+        opacity: 0,
+        y: 50,
+        duration: 1.0,
+        ease: 'power2.out'
+      });
+    });
+
+    gsap.utils.toArray('.stat-box, .achievement-card').forEach((el, i) => {
+      gsap.from(el, {
+        scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none none' },
+        opacity: 0,
+        y: 40,
+        duration: .7,
+        delay: i * .12,
+        ease: 'power3.out'
+      });
+    });
+  });
+
+})();
+</script>
+
+</body>
+</html>
+

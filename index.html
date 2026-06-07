@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ФК Вишневе — Сила та Честь</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Russo+One&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="header.cinematic.css" />
+
+  <!-- CMS content layer -->
+  <script src="services/config.js"></script>
+  <script src="services/ui.js"></script>
+  <script src="services/news.js"></script>
+  <script src="services/players.js"></script>
+  <script src="services/matches.js"></script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+  <!-- Cinematic Header Module -->
+  <script src="modules/cinematicHeader.js" defer></script>
+</head>
+
+<body>
+
+<!-- ── PAGE INTRO OVERLAY ─────────────────────────────────────── -->
+<div class="page-intro" id="pageIntro" aria-hidden="true">
+  <div class="page-intro-badge">
+    <span class="page-intro-fc">Футбольний Клуб</span>
+    <span class="page-intro-name">Вишневе</span>
+  </div>
+  <div class="page-intro-line" id="pageIntroLine"></div>
+</div>
+
+<!-- ── SCROLL PROGRESS BAR ────────────────────────────────────── -->
+<div class="scroll-progress-bar" id="scrollProgressBar" aria-hidden="true"></div>
+
+<!-- ── MENU BACKDROP ─────────────────────────────────────────── -->
+<div class="menu-backdrop" id="menuBackdrop"></div>
+
+<!-- ── HEADER ────────────────────────────────────────────────── -->
+<header class="header" id="mainHeader">
+  <div class="burger-container">
+
+    <a href="index.html" class="logo-block">
+      <img src="img/logo.png" alt="Логотип ФК Вишневе" class="club-logo" />
+      <span class="club-name">ФК Вишневе</span>
+    </a>
+
+    <div class="burger" id="burger" aria-label="Відкрити меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </div>
+
+    <nav class="menu" id="menu" aria-label="Головна навігація">
+      <ul>
+        <li><a href="index.html" class="nav-active">Головна</a></li>
+        <li><a href="about.html">Про нас</a></li>
+        <li class="has-submenu">
+          <div class="menu-item">
+            <a href="teams.html">Команди</a>
+            <span class="arrow" aria-hidden="true">&#9662;</span>
+          </div>
+          <ul class="submenu">
+            <li><a href="team1.html?team=main">Головна команда</a></li>
+            <li><a href="team1.html?team=youth">Молодіжка</a></li>
+            <li><a href="team1.html?team=u-19">U-19</a></li>
+          </ul>
+        </li>
+        <li><a href="matches.html">Матчі</a></li>
+        <li><a href="news.html">Новини</a></li>
+      </ul>
+    </nav>
+
+  </div>
+</header>
+
+<!-- ── CINEMATIC HERO ─────────────────────────────────────────── -->
+<section class="hero-cinema" id="heroSlider" aria-label="Головний слайдер">
+
+  <!-- Background slides -->
+  <div class="hero-bg" aria-hidden="true">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="video/hero.mp4" type="video/mp4" />
+    </video>
+    <div class="hero-slide active" style="background-image: url('img/game/1g.JPG');"></div>
+    <div class="hero-slide"        style="background-image: url('img/game/2g.JPG');"></div>
+    <div class="hero-slide"        style="background-image: url('img/game/4g.JPG');"></div>
+  </div>
+
+  <!-- Overlay layers -->
+  <div class="hero-dark-overlay" aria-hidden="true"></div>
+  <div class="hero-gradient"     aria-hidden="true"></div>
+  <div class="hero-light-beam"   aria-hidden="true"></div>
+
+  <!-- Main content -->
+  <div class="hero-content">
+    <p class="hero-pre">Футбольний клуб</p>
+    <h1 class="hero-title">
+      <span class="hero-title-line">ФК</span>
+      <span class="hero-title-line accent">Вишневе</span>
+    </h1>
+    <p class="hero-tagline">Сила &bull; Честь &bull; Перемога</p>
+    <div class="hero-ctas">
+      <a href="matches.html" class="hero-btn hero-btn--primary">
+        Матчі <i class="fa-solid fa-arrow-right"></i>
+      </a>
+      <a href="team1.html" class="hero-btn hero-btn--ghost">Склад команди</a>
+    </div>
+  </div>
+
+  <!-- Bottom info strip (populated by CMS bootstrap) -->
+  <div class="hero-bottom" id="heroFixtureWrap" aria-label="Матч клубу">
+    <div class="hero-last-match" id="heroFixture">
+      <span class="match-label"  id="heroFixtureLabel">Останній матч</span>
+      <span class="match-teams"  id="heroFixtureTeams">—</span>
+      <span class="match-score"  id="heroFixtureScore"></span>
+    </div>
+  </div>
+
+  <!-- Vertical dots navigation -->
+  <div class="hero-dots" id="sliderDots" aria-label="Навігація слайдера"></div>
+
+  <!-- Left scroll indicator -->
+  <div class="hero-scroll" aria-hidden="true">
+    <div class="hero-scroll-line"></div>
+    <span class="hero-scroll-label">Scroll</span>
+  </div>
+
+</section>
+
+<!-- ── SCENE TICKER ────────────────────────────────────────────── -->
+<div class="scene-ticker" aria-hidden="true">
+  <div class="scene-ticker-track">
+    <span>ФК Вишневе</span><span class="dot">•</span>
+    <span>Сила</span><span class="dot">•</span>
+    <span>Честь</span><span class="dot">•</span>
+    <span>Перемога</span><span class="dot">•</span>
+    <span>Футбол</span><span class="dot">•</span>
+    <span>Вишневе</span><span class="dot">•</span>
+    <span>Passion</span><span class="dot">•</span>
+    <span>Glory</span><span class="dot">•</span>
+    <span>ФК Вишневе</span><span class="dot">•</span>
+    <span>Сила</span><span class="dot">•</span>
+    <span>Честь</span><span class="dot">•</span>
+    <span>Перемога</span><span class="dot">•</span>
+    <span>Футбол</span><span class="dot">•</span>
+    <span>Вишневе</span><span class="dot">•</span>
+    <span>Passion</span><span class="dot">•</span>
+    <span>Glory</span><span class="dot">•</span>
+  </div>
+</div>
+
+<!-- ── STATS BAND ─────────────────────────────────────────────── -->
+<section class="stats-band" aria-label="Клуб у цифрах">
+  <div class="stats-band-inner">
+    <div class="stat-item">
+      <span class="stat-num" data-target="15">0</span><span class="stat-unit">+</span>
+      <span class="stat-label">Років</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" data-target="320">0</span><span class="stat-unit">+</span>
+      <span class="stat-label">Матчів</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" data-target="78">0</span><span class="stat-unit">%</span>
+      <span class="stat-label">Перемог</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-num" data-target="5">0</span><span class="stat-unit">К+</span>
+      <span class="stat-label">Вболівальників</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── NEWS SECTION ───────────────────────────────────────────── -->
+<section class="news-section" id="newsSection">
+  <div class="chapter-tag" aria-hidden="true">01</div>
+  <div class="news-section-header">
+    <span class="section-label">Медіа</span>
+    <h2>Останні новини</h2>
+  </div>
+
+  <div class="news-container" id="homeNewsContainer"></div>
+  <div id="homeNewsState"></div>
+
+  <div class="news-cta">
+    <a href="news.html" class="btn btn-primary">
+      Всі новини <i class="fa-solid fa-arrow-right"></i>
+    </a>
+  </div>
+</section>
+
+<!-- ── VISUAL PLAYGROUND ─────────────────────────────────────── -->
+<section class="visual-playground" id="visualPlayground" aria-label="Візуальний простір клубу">
+
+  <div class="vp-atmosphere" aria-hidden="true"></div>
+
+  <div class="vp-pinned" id="vpPinned">
+    <div class="vp-center">
+      <span class="section-label" style="color:var(--c-pink);">Візуальний простір</span>
+      <h2 class="vp-title">КЛУБ<br>В ДІЇ</h2>
+      <p class="vp-subtitle">Сила &bull; Пристрасть &bull; Перемога</p>
+      <div class="vp-progress" aria-hidden="true">
+        <div class="vp-progress-bar" id="vpProgressBar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="vp-gallery" aria-hidden="true">
+    <div class="vp-card" data-speed="0.35"><img src="img/game/1g.JPG" alt="" loading="lazy" /></div>
+    <div class="vp-card" data-speed="0.62"><img src="img/game/2g.JPG" alt="" loading="lazy" /></div>
+    <div class="vp-card" data-speed="0.44"><img src="img/3.jpg"       alt="" loading="lazy" /></div>
+    <div class="vp-card" data-speed="0.28"><img src="img/game/4g.JPG" alt="" loading="lazy" /></div>
+    <div class="vp-card" data-speed="0.56"><img src="img/game/6g.JPG" alt="" loading="lazy" /></div>
+    <div class="vp-card" data-speed="0.40"><img src="img/9.webp"      alt="" loading="lazy" /></div>
+  </div>
+
+</section>
+
+<!-- ── STARS SECTION ──────────────────────────────────────────── -->
+<section class="stars-section" id="starsSection">
+  <div class="chapter-tag" aria-hidden="true">03</div>
+  <div class="stars-section-header">
+    <span class="section-label">Зірки клубу</span>
+    <h2>Кращі гравці</h2>
+  </div>
+
+  <div class="stars-grid" id="homeStarsGrid"></div>
+  <div id="homeStarsState"></div>
+</section>
+
+<!-- ── PRE-FOOTER TICKER ───────────────────────────────────────── -->
+<div class="scene-ticker" aria-hidden="true" style="background: var(--c-darkest); border-top: 1px solid rgba(255,255,255,.05);">
+  <div class="scene-ticker-track" style="animation-direction: reverse; animation-duration: 28s;">
+    <span>Сезон 2025/26</span><span class="dot">•</span>
+    <span>15+ Років</span><span class="dot">•</span>
+    <span>320 Матчів</span><span class="dot">•</span>
+    <span>78% Перемог</span><span class="dot">•</span>
+    <span>5К Вболівальників</span><span class="dot">•</span>
+    <span>Вишневе</span><span class="dot">•</span>
+    <span>Season 2025/26</span><span class="dot">•</span>
+    <span>Glory</span><span class="dot">•</span>
+    <span>Сезон 2025/26</span><span class="dot">•</span>
+    <span>15+ Років</span><span class="dot">•</span>
+    <span>320 Матчів</span><span class="dot">•</span>
+    <span>78% Перемог</span><span class="dot">•</span>
+    <span>5К Вболівальників</span><span class="dot">•</span>
+    <span>Вишневе</span><span class="dot">•</span>
+    <span>Season 2025/26</span><span class="dot">•</span>
+    <span>Glory</span><span class="dot">•</span>
+  </div>
+</div>
+
+<!-- ── FOOTER ─────────────────────────────────────────────────── -->
+<footer class="custom-footer">
+  <div class="footer-content">
+
+    <div class="club-info">
+      <div class="club-title">
+        <div class="shield-icon">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <div>
+          <h2>ФК <span>Вишневе</span></h2>
+          <p class="subtitle">Футбольний клуб</p>
+        </div>
+      </div>
+      <p class="description">
+        Футбольний клуб Вишневе — один з найперспективніших клубів України з багаторічною
+        історією та численними досягненнями на регіональному та національному рівнях.
+      </p>
+      <div class="social-icons">
+        <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+        <a href="#" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <h3>Навігація</h3>
+      <ul>
+        <li><a href="index.html">Головна</a></li>
+        <li><a href="about.html">Про нас</a></li>
+        <li><a href="teams.html">Команди</a></li>
+        <li><a href="matches.html">Матчі</a></li>
+        <li><a href="news.html">Новини</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-contact">
+      <h3>Контакти</h3>
+      <p><i class="fa-solid fa-location-dot"></i> вул. Спортивна, 15, м. Вишневе, 08132</p>
+      <p><i class="fa-solid fa-phone"></i> +38 (044) 555-12-34</p>
+      <p><i class="fa-solid fa-envelope"></i> info@fcvyshneve.ua</p>
+    </div>
+
+  </div>
+
+  <div class="footer-bottom">
+    <span>&copy; 2025 ФК Вишневе. Всі права захищені.</span>
+    <span>Сила та Честь</span>
+  </div>
+</footer>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── DOM refs ─────────────────────────────────────── */
+  const burger   = document.getElementById('burger');
+  const menu     = document.getElementById('menu');
+  const backdrop = document.getElementById('menuBackdrop');
+  const header   = document.getElementById('mainHeader');
+
+  /* ── Burger / Menu toggle ─────────────────────────── */
+  function openMenu() {
+    menu.classList.add('active');
+    burger.classList.add('active');
+    backdrop.classList.add('active');
+    burger.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    menu.classList.remove('active');
+    burger.classList.remove('active');
+    backdrop.classList.remove('active');
+    burger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  burger.addEventListener('click', () => {
+    menu.classList.contains('active') ? closeMenu() : openMenu();
+  });
+  backdrop.addEventListener('click', closeMenu);
+
+  /* Close on nav link click */
+  menu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+
+  /* Submenu arrow toggle (mobile) */
+  document.querySelectorAll('.has-submenu .arrow').forEach(arrow => {
+    arrow.addEventListener('click', e => {
+      e.stopPropagation();
+      arrow.closest('.has-submenu').classList.toggle('open');
+    });
+  });
+
+  /* ── Header hide on scroll ────────────────────────── */
+  let lastY = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    header.classList.toggle('hide',    y > lastY && y > 80);
+    header.classList.toggle('scrolled', y > 20);
+    lastY = y <= 0 ? 0 : y;
+  }, { passive: true });
+
+  /* ── Hero Slider ──────────────────────────────────── */
+  const slides   = Array.from(document.querySelectorAll('.hero-slide'));
+  const dotsWrap = document.getElementById('sliderDots');
+  let current    = 0;
+  let autoTimer  = null;
+
+  /* Build vertical dots */
+  slides.forEach((_, i) => {
+    const dot = document.createElement('button');
+    dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
+    dot.setAttribute('aria-label', 'Слайд ' + (i + 1));
+    dot.addEventListener('click', () => { goTo(i); startAuto(); });
+    dotsWrap.appendChild(dot);
+  });
+
+  function getDots() { return dotsWrap.querySelectorAll('.hero-dot'); }
+
+  function goTo(index) {
+    slides[current].classList.remove('active');
+    getDots()[current].classList.remove('active');
+    current = (index + slides.length) % slides.length;
+    slides[current].classList.add('active');
+    getDots()[current].classList.add('active');
+  }
+
+  function startAuto() {
+    stopAuto();
+    autoTimer = setInterval(() => goTo(current + 1), 6000);
+  }
+  function stopAuto() { if (autoTimer) clearInterval(autoTimer); }
+
+  startAuto();
+
+  /* Pause on hover */
+  const heroEl = document.getElementById('heroSlider');
+  heroEl.addEventListener('mouseenter', stopAuto);
+  heroEl.addEventListener('mouseleave', startAuto);
+
+  /* Touch swipe */
+  let touchStartX = 0;
+  heroEl.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+  heroEl.addEventListener('touchend',   e => {
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) { goTo(current + (dx < 0 ? 1 : -1)); startAuto(); }
+  }, { passive: true });
+
+  /* ── Ripple on hero CTAs ──────────────────────────── */
+  document.querySelectorAll('.hero-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      const r = document.createElement('span');
+      r.className = 'ripple';
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      r.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+      this.appendChild(r);
+      r.addEventListener('animationend', () => r.remove());
+    });
+  });
+
+  /* ── Scroll progress bar ─────────────────────────── */
+  const progressBar = document.getElementById('scrollProgressBar');
+  if (progressBar) {
+    window.addEventListener('scroll', () => {
+      const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight) * 100;
+      progressBar.style.width = pct + '%';
+    }, { passive: true });
+  }
+
+  /* ── GSAP Cinematic Scroll System ─────────────────── */
+  window.addEventListener('load', () => {
+    if (typeof gsap === 'undefined') return;
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* ── 1. PAGE INTRO → HERO ENTRANCE ──────────────── */
+    const intro = document.getElementById('pageIntro');
+    const introLine = document.getElementById('pageIntroLine');
+
+    const introTl = gsap.timeline({
+      onComplete: () => { intro.style.pointerEvents = 'none'; }
+    });
+    introTl
+      .from('.page-intro-fc',   { y: 16, opacity: 0, duration: .6, ease: 'power3.out' }, .2)
+      .from('.page-intro-name', { y: 40, opacity: 0, filter: 'blur(20px)', duration: .9, ease: 'power4.out' }, .4)
+      .to(introLine, { height: 60, duration: .5, ease: 'power2.out' }, .9)
+      .to(intro, {
+        yPercent: -100,
+        duration: 1,
+        ease: 'power4.inOut',
+        delay: .3
+      }, 1.4)
+      /* Hero elements reveal after intro exits */
+      .from('.hero-pre',     { y: 28, opacity: 0, filter: 'blur(10px)', duration: .8,  ease: 'power3.out' }, 1.9)
+      .from('.hero-title',   { y: 70, opacity: 0, filter: 'blur(16px)', duration: 1.1, ease: 'power4.out' }, 2.2)
+      .from('.hero-tagline', { y: 18, opacity: 0, filter: 'blur(6px)',  duration: .75, ease: 'power3.out' }, 2.7)
+      .from('.hero-ctas',    { y: 18, opacity: 0, filter: 'blur(6px)',  duration: .75, ease: 'power3.out' }, 2.9)
+      .from('.hero-bottom',  { opacity: 0, y: 10, duration: .7,        ease: 'power2.out' }, 3.1)
+      .from('.hero-scroll',  { opacity: 0, duration: .9, ease: 'power2.out' }, 3.2)
+      .from('.hero-dots',    { opacity: 0, duration: .9, ease: 'power2.out' }, 3.2);
+
+    /* ── 2. HERO BG PARALLAX ─────────────────────────── */
+    gsap.to('.hero-bg', {
+      yPercent: 18,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#heroSlider',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+      }
+    });
+
+    /* Hero content fades out on scroll */
+    gsap.to('.hero-content', {
+      opacity: 0,
+      y: -40,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#heroSlider',
+        start: 'center center',
+        end: 'bottom top',
+        scrub: 1,
+      }
+    });
+
+    /* ── 3. STATS BAND — scrub reveal ────────────────── */
+    const statItems = gsap.utils.toArray('.stat-item');
+    if (statItems.length) {
+      gsap.from(statItems, {
+        y: 50, opacity: 0, filter: 'blur(8px)',
+        stagger: .12,
+        ease: 'power3.out',
+        duration: 1,
+        scrollTrigger: {
+          trigger: '.stats-band',
+          start: 'top 78%',
+          toggleActions: 'play none none none',
+        }
+      });
+
+      /* Stat numbers count up */
+      const cObs = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const el  = entry.target.querySelector('.stat-num[data-target]');
+          if (!el) return;
+          const end = parseInt(el.dataset.target, 10);
+          const dur = 2000;
+          const t0  = performance.now();
+          const tick = now => {
+            const p = Math.min((now - t0) / dur, 1);
+            const eased = 1 - Math.pow(1 - p, 4);
+            el.textContent = Math.round(eased * end);
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+          cObs.unobserve(entry.target);
+        });
+      }, { threshold: .6 });
+      statItems.forEach(el => cObs.observe(el));
+    }
+
+    /* ── 4. NEWS SECTION — cinematic card reveals ─────── */
+    // ===== PLATFORM FIX START: stable card reveal regardless of CMS timing =====
+    // PRIOR BUG: when CMS bootstrap rendered cards AFTER this ran, the
+    // selector was empty → no animation registered → cards looked default.
+    // When it ran AFTER bootstrap, default `immediateRender: true` snapped
+    // cards to the FROM state (y:80, scale:.96, blur(10px)) and they
+    // stayed there until the user scrolled. Mid-stagger refreshes produced
+    // the "Card 1 taller, Card 2 shorter" effect — actually different
+    // scale factors locked in.
+    //
+    // FIX: (1) expose the binder as window.__fcvBindNewsReveal so the
+    // CMS bootstrap can call it after rendering cards.
+    //      (2) add `immediateRender: false` so cards never lock into the
+    //          FROM state if the trigger fires before the user reaches
+    //          the section.
+    //      (3) guard against double-binding via a stable trigger id.
+    window.__fcvBindNewsReveal = function () {
+      const cards = gsap.utils.toArray('#newsSection .news-card');
+      if (!cards.length) return false;
+      ScrollTrigger.getById('fcv-news-cards') && ScrollTrigger.getById('fcv-news-cards').kill();
+      gsap.from(cards, {
+        y: 80, scale: .96, opacity: 0, filter: 'blur(10px)',
+        stagger: .18, duration: 1.1, ease: 'power4.out',
+        immediateRender: false,
+        scrollTrigger: {
+          id: 'fcv-news-cards',
+          trigger: '#newsSection',
+          start: 'top 72%',
+          toggleActions: 'play none none none',
+        }
+      });
+      return true;
+    };
+    // Header reveal is static markup — bind immediately, immediate-render-safe.
+    gsap.from('#newsSection .news-section-header', {
+      y: 30, opacity: 0, filter: 'blur(8px)',
+      duration: .9, ease: 'power3.out',
+      immediateRender: false,
+      scrollTrigger: {
+        trigger: '#newsSection',
+        start: 'top 80%',
+        toggleActions: 'play none none none',
+      }
+    });
+    // Try once on init in case cards happen to already exist (cached fetch).
+    window.__fcvBindNewsReveal();
+    // ===== PLATFORM FIX END =====
+
+    /* ── 5. MATCHES SECTION — timeline stagger ────────── */
+    const fixtures = gsap.utils.toArray('#matchesSection .fixture-card');
+    if (fixtures.length) {
+      gsap.from('#matchesSection h2', {
+        x: -40, opacity: 0, filter: 'blur(6px)',
+        duration: .9, ease: 'power3.out',
+        scrollTrigger: { trigger: '#matchesSection', start: 'top 80%', toggleActions: 'play none none none' }
+      });
+      gsap.from(fixtures, {
+        x: -60, opacity: 0, filter: 'blur(8px)',
+        stagger: .15, duration: 1, ease: 'power3.out',
+        scrollTrigger: { trigger: '#matchesSection', start: 'top 72%', toggleActions: 'play none none none' }
+      });
+    }
+
+    /* ── 6. VISUAL PLAYGROUND — pin + parallax ────────── */
+    const vpSection = document.getElementById('visualPlayground');
+    const vpPinned  = document.getElementById('vpPinned');
+    const vpBar     = document.getElementById('vpProgressBar');
+
+    if (vpSection && vpPinned) {
+      ScrollTrigger.create({
+        trigger: vpSection,
+        start: 'top top',
+        end: 'bottom bottom',
+        pin: vpPinned,
+        pinSpacing: false,
+      });
+
+      if (vpBar) {
+        gsap.to(vpBar, {
+          width: '100%', ease: 'none',
+          scrollTrigger: { trigger: vpSection, start: 'top top', end: 'bottom bottom', scrub: .5 }
+        });
+      }
+
+      /* Title scale + blur reveal */
+      gsap.from('.vp-title', {
+        scale: .82, opacity: 0, filter: 'blur(20px)',
+        duration: 1.6, ease: 'power4.out',
+        scrollTrigger: { trigger: vpSection, start: 'top 85%', toggleActions: 'play none none none' }
+      });
+      gsap.from('.vp-subtitle', {
+        opacity: 0, y: 16, filter: 'blur(6px)',
+        duration: 1, delay: .3, ease: 'power3.out',
+        scrollTrigger: { trigger: vpSection, start: 'top 85%', toggleActions: 'play none none none' }
+      });
+
+      /* Gallery parallax */
+      document.querySelectorAll('.vp-card').forEach(card => {
+        const speed = parseFloat(card.dataset.speed) || .45;
+        gsap.to(card, {
+          y: () => -(vpSection.offsetHeight * speed * .28),
+          ease: 'none',
+          scrollTrigger: { trigger: vpSection, start: 'top top', end: 'bottom bottom', scrub: 1.5 }
+        });
+      });
+    }
+
+    /* ── 7. STARS SECTION — dramatic reveal ───────────── */
+    // ===== PLATFORM FIX START: stable star reveal regardless of CMS timing =====
+    // Same race as news section. Section header is static, cards are CMS.
+    gsap.from('#starsSection .stars-section-header', {
+      y: 30, opacity: 0, filter: 'blur(8px)',
+      duration: .9, ease: 'power3.out',
+      immediateRender: false,
+      scrollTrigger: { trigger: '#starsSection', start: 'top 80%', toggleActions: 'play none none none' }
+    });
+    window.__fcvBindStarsReveal = function () {
+      const cards = gsap.utils.toArray('#starsSection .player-card.wide');
+      if (!cards.length) return false;
+      ScrollTrigger.getById('fcv-stars-cards') && ScrollTrigger.getById('fcv-stars-cards').kill();
+      gsap.from(cards, {
+        y: 100, scale: .92, opacity: 0, filter: 'blur(12px)',
+        stagger: { amount: .5, from: 'start' },
+        duration: 1.2, ease: 'power4.out',
+        immediateRender: false,
+        scrollTrigger: { id: 'fcv-stars-cards', trigger: '#starsSection', start: 'top 68%', toggleActions: 'play none none none' }
+      });
+      return true;
+    };
+    window.__fcvBindStarsReveal();
+    // ===== PLATFORM FIX END =====
+
+    /* ── 8. SECTION CHAPTER TAGS — slow parallax ─────── */
+    gsap.utils.toArray('.chapter-tag').forEach(tag => {
+      gsap.to(tag, {
+        yPercent: -30,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: tag.parentElement,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 2,
+        }
+      });
+    });
+
+    /* ── 9. GENERAL SCROLL REVEALS ────────────────────── */
+    gsap.utils.toArray('.gsap-fade').forEach(el => {
+      gsap.to(el, {
+        opacity: 1, filter: 'blur(0px)',
+        duration: .9, ease: 'power2.out',
+        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+      });
+    });
+    gsap.utils.toArray('.gsap-left').forEach(el => {
+      gsap.to(el, {
+        opacity: 1, x: 0, filter: 'blur(0px)',
+        duration: .9, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+      });
+    });
+    gsap.utils.toArray('.gsap-up').forEach(el => {
+      if (el.closest('#newsSection, #matchesSection, #starsSection')) return;
+      gsap.to(el, {
+        opacity: 1, y: 0, filter: 'blur(0px)',
+        duration: .85, ease: 'power3.out',
+        scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none none' }
+      });
+    });
+
+    /* ── 10. CARD TILT MICRO-INTERACTION ──────────────── */
+    // ===== NEWS UX REWORK START =====
+    // .news-card removed from tilt — the editorial direction is "no
+    // motion on news hover". Stars (.player-card.wide) and homepage
+    // fixture card keep the micro-interaction.
+    // ===== NEWS UX REWORK END =====
+    document.querySelectorAll('.fixture-card, .player-card.wide').forEach(card => {
+      card.addEventListener('mousemove', function(e) {
+        const r = this.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width  - .5;
+        const y = (e.clientY - r.top)  / r.height - .5;
+        gsap.to(this, {
+          rotationY: x * 7,
+          rotationX: -y * 5,
+          transformPerspective: 900,
+          ease: 'power1.out',
+          duration: .35,
+          overwrite: 'auto'
+        });
+      });
+      card.addEventListener('mouseleave', function() {
+        gsap.to(this, {
+          rotationY: 0, rotationX: 0,
+          duration: .65, ease: 'elastic.out(1,.4)',
+          overwrite: 'auto'
+        });
+      });
+    });
+
+    /* ── 11. MAGNETIC BUTTONS ──────────────────────────── */
+    document.querySelectorAll('.hero-btn').forEach(btn => {
+      btn.addEventListener('mousemove', function(e) {
+        const r = this.getBoundingClientRect();
+        const x = (e.clientX - r.left - r.width  / 2) * .2;
+        const y = (e.clientY - r.top  - r.height / 2) * .2;
+        gsap.to(this, { x, y, duration: .35, ease: 'power2.out', overwrite: 'auto' });
+      });
+      btn.addEventListener('mouseleave', function() {
+        gsap.to(this, { x: 0, y: 0, duration: .7, ease: 'elastic.out(1,.4)', overwrite: 'auto' });
+      });
+    });
+  });
+
+})();
+</script>
+
+<!-- ── CMS BOOTSTRAP (homepage news preview + featured stars) ───── -->
+<script>
+(function () {
+  'use strict';
+  // ===== NEW FEATURE START: CMS CONTENT LAYER =====
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function animateIn(card, delay) {
+    if (typeof gsap === 'undefined') return;
+    gsap.from(card, {
+      opacity: 0, y: 36, duration: .85, ease: 'power3.out', delay: delay || 0,
+    });
+  }
+
+  /* ── Homepage news preview (top 2 from CMS) ───────────────── */
+  (async function bootstrapHomeNews() {
+    const mount = document.getElementById('homeNewsContainer');
+    const stateEl = document.getElementById('homeNewsState');
+    if (!mount) return;
+    if (!window.FCV || !FCV.NewsService) { FCV.UI && FCV.UI.error(stateEl, 'CMS-шар не завантажено'); return; }
+    FCV.UI.loading(stateEl, 'Завантажуємо новини…');
+    try {
+      const items = await FCV.NewsService.getNews({ pageSize: 2 });
+      if (!items.length) {
+        FCV.UI.empty(stateEl, 'Немає новин для показу', 'Опублікуйте новину у Strapi');
+        return;
+      }
+      FCV.UI.clear(stateEl);
+      // ===== PLATFORM FIX START: hand reveal off to cinematic binder =====
+      // PRIOR BUG: animateIn(card) ran its own gsap.from per-card while the
+      // cinematic IIFE also tried to run its scroll-trigger animation —
+      // when both fired, they collided; when neither did, cards looked
+      // static. Now we render ALL cards, then call the cinematic binder
+      // exactly once with the populated DOM. Trigger fires when the user
+      // reaches the section. `immediateRender: false` over there keeps
+      // the FROM state from locking the layout mid-stagger.
+      items.forEach(n => {
+        const art = document.createElement('article');
+        art.className = 'news-card';
+        art.setAttribute('style', "background-image: url('" + esc(n.img) + "');");
+        art.innerHTML =
+          '<div class="news-info">' +
+            '<h3>' + esc(n.title) + '</h3>' +
+            '<p>' + esc(n.text) + '</p>' +
+            '<a href="news.html">Читати далі</a>' +
+          '</div>';
+        mount.appendChild(art);
+      });
+      if (typeof window.__fcvBindNewsReveal === 'function') window.__fcvBindNewsReveal();
+      if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+      // ===== PLATFORM FIX END =====
+    } catch (e) {
+      FCV.UI.error(stateEl, 'Не вдалося завантажити новини', e);
+    }
+  })();
+
+  /* ── Hero fixture (featured match, falls back to most recent) ─ */
+  (async function bootstrapHeroFixture() {
+    const wrap   = document.getElementById('heroFixtureWrap');
+    const label  = document.getElementById('heroFixtureLabel');
+    const teams  = document.getElementById('heroFixtureTeams');
+    const score  = document.getElementById('heroFixtureScore');
+    if (!wrap || !teams) return;
+    if (!window.FCV || !FCV.MatchesService) { wrap.style.display = 'none'; return; }
+    try {
+      let m = await FCV.MatchesService.getFeaturedMatch();
+      if (!m) {
+        const list = await FCV.MatchesService.getMatches({ pageSize: 1 });
+        m = list[0] || null;
+      }
+      if (!m) { wrap.style.display = 'none'; return; }
+
+      const labelText = m.status === 'finished' ? 'Останній матч'
+                      : m.status === 'live'     ? 'LIVE'
+                      : 'Наступний матч';
+      if (label) label.textContent = labelText;
+
+      const homeShort = (m.home || '').replace(/^ФК\s+/, '');
+      const awayShort = (m.away || '').replace(/^ФК\s+/, '');
+      teams.textContent = (homeShort || '—') + ' — ' + (awayShort || '—');
+
+      if (m.homeScore != null && m.awayScore != null) {
+        score.textContent = m.homeScore + ':' + m.awayScore;
+        score.style.display = '';
+      } else if (m.time) {
+        score.textContent = m.time;
+        score.style.display = '';
+      } else {
+        score.style.display = 'none';
+      }
+    } catch (e) {
+      console.warn('[FCV] Hero fixture unavailable', e);
+      wrap.style.display = 'none';
+    }
+  })();
+
+  /* ── Homepage featured stars (featured players from CMS) ─── */
+  (async function bootstrapHomeStars() {
+    const mount = document.getElementById('homeStarsGrid');
+    const stateEl = document.getElementById('homeStarsState');
+    if (!mount) return;
+    if (!window.FCV || !FCV.PlayersService) { FCV.UI && FCV.UI.error(stateEl, 'CMS-шар не завантажено'); return; }
+    FCV.UI.loading(stateEl, 'Завантажуємо зірок…');
+    try {
+      // ===== FIX START: limit homepage stars to 3, deterministic order =====
+      // Fetch a small pool of featured players, then locally sort
+      //   captain → first  |  rest by number (ASC, deterministic)
+      // and take only the first 3 so the homepage never overflows.
+      const STARS_MAX = 3;
+      const pool = await FCV.PlayersService.getPlayers({ featured: true, pageSize: 12 });
+      const players = pool.slice().sort((a, b) => {
+        if (a.captain && !b.captain) return -1;
+        if (b.captain && !a.captain) return 1;
+        const an = a.number == null ? 999 : a.number;
+        const bn = b.number == null ? 999 : b.number;
+        return an - bn;
+      }).slice(0, STARS_MAX);
+      // ===== FIX END =====
+      if (!players.length) {
+        FCV.UI.empty(stateEl, 'Поки що немає зірок', 'Позначте гравців featured=true у Strapi');
+        return;
+      }
+      FCV.UI.clear(stateEl);
+      // ===== PLATFORM FIX START: hand reveal off to cinematic binder =====
+      players.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'player-card wide';
+        div.setAttribute('style', "background-image: url('" + esc(p.photo) + "');");
+        const badge = p.captain ? 'Капітан' : 'Зірка клубу';
+        const subline = (p.shortBio && p.shortBio.length < 80) ? p.shortBio : '';
+        div.innerHTML =
+          '<div class="player-badge">' + esc(badge) + '</div>' +
+          '<div class="player-info overlay">' +
+            '<h3>' + esc(p.fullName) + '</h3>' +
+            '<p class="position">' + esc(p.position || '') + '</p>' +
+            (subline ? '<p class="stats">' + esc(subline) + '</p>' : '') +
+          '</div>';
+        mount.appendChild(div);
+      });
+      if (typeof window.__fcvBindStarsReveal === 'function') window.__fcvBindStarsReveal();
+      if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+      // ===== PLATFORM FIX END =====
+    } catch (e) {
+      FCV.UI.error(stateEl, 'Не вдалося завантажити зірок', e);
+    }
+  })();
+  // ===== NEW FEATURE END: CMS CONTENT LAYER =====
+})();
+</script>
+
+</body>
+</html>

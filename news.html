@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Новини — ФК Вишневе</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Russo+One&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Styles: global first, then page-specific -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="news.css" />
+  <link rel="stylesheet" href="header.cinematic.css" />
+  <link rel="stylesheet" href="news.cinematic.css" />
+  <!-- nms.advanced.css kept for filter-bar visual classes (.naf-pill) -->
+  <link rel="stylesheet" href="nms.advanced.css" />
+
+  <!-- CMS content layer (Strapi) — loads before the inline bootstrap -->
+  <script src="services/config.js"></script>
+  <script src="services/ui.js"></script>
+  <script src="services/news.js"></script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+  <!-- Cinematic Header Module -->
+  <script src="modules/cinematicHeader.js" defer></script>
+  <script src="modules/cinematicNews.js" defer></script>
+  <!-- ===== NEWS GRID COVERFLOW START ===== -->
+  <script src="modules/newsGridCoverflow.js" defer></script>
+  <!-- ===== NEWS GRID COVERFLOW END ===== -->
+
+
+  <!-- ===== NEWS UX REWORK START =====
+       nmsFilters / nmsAdvanced are intentionally NOT loaded on this page.
+       News filtering is now data-first (see inline script below): the
+       filter operates on the cached `_allNews` array and re-renders the
+       grid. It never reaches into the DOM to hide cards.
+       ===== NEWS UX REWORK END ===== -->
+
+  <style>
+    /* News exploration UI — reuses .naf-pill visuals for consistency */
+    .news-explore {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: var(--sp-3, .75rem);
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: var(--sp-5, 1.25rem) var(--sp-6, 1.5rem) var(--sp-3, .75rem);
+    }
+    .news-explore-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--sp-3, .75rem);
+      justify-content: center;
+    }
+    .news-explore .naf-pill { background: rgba(8,8,12,.5); border: 1px solid rgba(255,255,255,.06); }
+    .news-explore .naf-pill.is-active { background: linear-gradient(135deg, rgba(167,31,69,.28) 0%, rgba(167,31,69,.14) 100%); border-color: rgba(197,47,90,.45); }
+    .news-explore-date {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .35rem .8rem .35rem 1rem;
+      border-radius: 999px;
+      background: rgba(8,8,12,.5);
+      border: 1px solid rgba(255,255,255,.08);
+      font-family: var(--f-heading, 'Oswald', sans-serif);
+      font-size: .55rem;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.5);
+    }
+    .news-explore-date input[type="date"] {
+      background: transparent;
+      border: 0;
+      color: rgba(255,255,255,.9);
+      font-family: var(--f-heading, 'Oswald', sans-serif);
+      font-size: .68rem;
+      letter-spacing: .12em;
+      padding: .18rem .25rem;
+      color-scheme: dark;
+      cursor: pointer;
+    }
+    .news-explore-date button {
+      background: transparent;
+      border: 0;
+      color: rgba(230,121,151,.7);
+      font-family: var(--f-heading, 'Oswald', sans-serif);
+      font-size: .58rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: .2rem .4rem;
+      border-radius: 999px;
+      transition: color .2s ease, background .2s ease;
+    }
+    .news-explore-date button:hover { color: #fff; background: rgba(197,47,90,.18); }
+    .news-explore-date button[hidden] { display: none; }
+    .news-explore-divider {
+      flex-basis: 100%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,.08), transparent);
+      margin: 0;
+    }
+    .news-explore-eyebrow {
+      font-family: var(--f-heading, 'Oswald', sans-serif);
+      font-size: .52rem;
+      letter-spacing: .28em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.32);
+    }
+    @media (max-width: 640px) {
+      .news-explore { padding: var(--sp-4, 1rem); }
+      .news-explore-row { gap: .35rem; }
+      .news-explore .naf-pill { padding: .45rem .8rem; font-size: .54rem; letter-spacing: .16em; }
+      .news-explore-date { flex-basis: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── MENU BACKDROP ─────────────────────────────────────────── -->
+<div class="menu-backdrop" id="menuBackdrop"></div>
+
+<!-- ── HEADER ────────────────────────────────────────────────── -->
+<header class="header" id="mainHeader">
+  <div class="burger-container">
+    <a href="index.html" class="logo-block">
+      <img src="img/logo.png" alt="Логотип ФК Вишневе" class="club-logo" />
+      <span class="club-name">ФК Вишневе</span>
+    </a>
+    <div class="burger" id="burger" aria-label="Відкрити меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </div>
+    <nav class="menu" id="menu">
+      <ul>
+        <li><a href="index.html">Головна</a></li>
+        <li><a href="about.html">Про нас</a></li>
+        <li class="has-submenu">
+          <div class="menu-item">
+            <a href="teams.html">Команди</a>
+            <span class="arrow">&#9662;</span>
+          </div>
+          <ul class="submenu">
+            <li><a href="team1.html?team=main">Головна команда</a></li>
+            <li><a href="team1.html?team=youth">Молодіжка</a></li>
+            <li><a href="team1.html?team=u-19">U-19</a></li>
+          </ul>
+        </li>
+        <li><a href="matches.html">Матчі</a></li>
+        <li><a href="news.html" class="nav-active">Новини</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ── PAGE HERO ─────────────────────────────────────────────── -->
+<div class="page-hero">
+  <h1>Новини клубу</h1>
+  <p>Останні події, трансфери та результати</p>
+</div>
+
+<!-- ── MODAL ─────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent">
+    <button class="close-modal" id="closeModal" aria-label="Закрити">&times;</button>
+    <h3 id="modalTitle">Заголовок новини</h3>
+    <p id="modalText">Тут буде повна інформація про новину.</p>
+  </div>
+</div>
+
+<!-- ── FEATURED NEWS (populated by CMS bootstrap) ─────────────── -->
+<section class="featured-news">
+  <h2>Головна новина</h2>
+  <div id="featuredNewsMount"></div>
+  <div id="featuredNewsState"></div>
+</section>
+
+<!-- ── ALL NEWS ───────────────────────────────────────────────── -->
+<section class="all-news">
+  <h2>Всі новини</h2>
+
+  <!-- ===== NEWS UX REWORK START: filter toolbar ===== -->
+  <div class="news-explore" role="toolbar" aria-label="Фільтр новин">
+    <div class="news-explore-row">
+      <button type="button" class="naf-pill is-active" data-news-view="all">Усі</button>
+      <button type="button" class="naf-pill" data-news-view="latest">Останні 30 днів</button>
+      <span class="news-explore-date">
+        <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+        <input type="date" id="newsDatePicker" aria-label="Вибрати дату" />
+        <button type="button" id="newsDateClear" hidden aria-label="Скинути дату">×</button>
+      </span>
+    </div>
+    <div class="news-explore-divider" aria-hidden="true"></div>
+    <div class="news-explore-row" id="newsCategories" aria-label="Категорії">
+      <span class="news-explore-eyebrow">Категорія</span>
+      <!-- pills injected at runtime from _allNews -->
+    </div>
+  </div>
+  <!-- ===== NEWS UX REWORK END ===== -->
+
+  <div class="news-grid" id="newsGrid"></div>
+  <div id="newsGridState"></div>
+</section>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── Navigation (unchanged) ───────────────────────────────── */
+  const burger   = document.getElementById('burger');
+  const menu     = document.getElementById('menu');
+  const backdrop = document.getElementById('menuBackdrop');
+  const header   = document.getElementById('mainHeader');
+
+  function openMenu() { menu.classList.add('active'); burger.classList.add('active'); backdrop.classList.add('active'); burger.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; }
+  function closeMenu() { menu.classList.remove('active'); burger.classList.remove('active'); backdrop.classList.remove('active'); burger.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; }
+
+  burger.addEventListener('click', () => menu.classList.contains('active') ? closeMenu() : openMenu());
+  backdrop.addEventListener('click', closeMenu);
+  menu.querySelectorAll('a').forEach(l => l.addEventListener('click', closeMenu));
+
+  document.querySelectorAll('.has-submenu .arrow').forEach(arrow => {
+    arrow.addEventListener('click', e => {
+      e.stopPropagation();
+      arrow.closest('.has-submenu').classList.toggle('open');
+    });
+  });
+
+  let lastY = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    header.classList.toggle('hide',     y > lastY && y > 60);
+    header.classList.toggle('scrolled', y > 20);
+    lastY = y <= 0 ? 0 : y;
+  }, { passive: true });
+
+  /* ============================================================
+     ===== NEWS UX REWORK START: data-first filtering =====
+
+     Architecture (mirrors matches.html for consistency):
+       _allNews         = full fetched dataset, owned in memory
+       _view            = 'all' | 'latest'  (date picker is a 3rd mode)
+       _selectedDate    = ISO yyyy-mm-dd or null
+       _selectedCategory= string or null
+       applyAndRender() = selectNews().sort().renderNews()
+
+     We never querySelector to hide/show cards. Filtering is a pure
+     transform over the array, container is re-rendered.
+     ============================================================ */
+  const newsGrid       = document.getElementById('newsGrid');
+  const newsGridState  = document.getElementById('newsGridState');
+  const featuredMount  = document.getElementById('featuredNewsMount');
+  const featuredState  = document.getElementById('featuredNewsState');
+  const datePicker     = document.getElementById('newsDatePicker');
+  const dateClear      = document.getElementById('newsDateClear');
+  const viewBar        = document.querySelector('.news-explore');
+  const categoriesBar  = document.getElementById('newsCategories');
+
+  let _allNews         = [];
+  let _view            = 'all';
+  let _selectedDate    = null;
+  let _selectedCategory = null;
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  /* Strip time → day-only comparisons */
+  function startOfDay(d) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  }
+  function newsDay(n) {
+    if (!n.iso) return null;
+    const d = new Date(n.iso);
+    if (isNaN(d)) return null;
+    return startOfDay(d);
+  }
+
+  /* ── Card render ─────────────────────────────────────────── */
+  function renderNewsCard(n) {
+    const card = document.createElement('div');
+    card.className = 'news-card';
+    card.innerHTML =
+      '<img src="' + esc(n.img) + '" alt="' + esc(n.category) + '" loading="lazy">' +
+      '<div class="date"><i class="fa-regular fa-calendar"></i> ' + esc(n.date) + '</div>' +
+      '<h4>' + esc(n.title) + '</h4>' +
+      '<p>' + esc(n.text) + '</p>' +
+      '<span class="author"><i class="fa-solid fa-user"></i> ' + esc(n.author) + '</span>' +
+      '<button class="toggle-details">Детальніше <i class="fa-solid fa-arrow-right"></i></button>';
+    return card;
+  }
+
+  /* ── Filter + sort the cached dataset for current state ──── */
+  function selectNews() {
+    const today  = startOfDay(new Date());
+    const cutoff = today - 30 * 86400000;  // last 30 days
+
+    let pool = _allNews.slice();
+
+    if (_selectedDate) {
+      const target = startOfDay(new Date(_selectedDate));
+      pool = pool.filter(n => newsDay(n) === target);
+    } else if (_view === 'latest') {
+      pool = pool.filter(n => {
+        const d = newsDay(n);
+        return d != null && d >= cutoff;
+      });
+    }
+
+    if (_selectedCategory) {
+      pool = pool.filter(n => n.category === _selectedCategory);
+    }
+
+    // Newest first, always (publishedAt DESC).
+    pool.sort((a, b) => (b.iso || '').localeCompare(a.iso || ''));
+    return pool;
+  }
+
+  function renderNews(list) {
+    newsGrid.innerHTML = '';
+    if (!list.length) {
+      const msg = _selectedDate
+        ? 'Новин за цю дату не знайдено'
+        : (_view === 'latest' || _selectedCategory)
+          ? 'Новин за обраними параметрами не знайдено'
+          : 'Поки що немає новин';
+      FCV.UI.empty(newsGridState, msg, _selectedCategory || _view !== 'all' || _selectedDate
+        ? 'Спробуйте інший фільтр або скиньте дату'
+        : 'Опублікуйте новину у Strapi');
+      return;
+    }
+    FCV.UI.clear(newsGridState);
+    const frag = document.createDocumentFragment();
+    list.forEach(n => frag.appendChild(renderNewsCard(n)));
+    newsGrid.appendChild(frag);
+  }
+
+  function applyAndRender() {
+    renderNews(selectNews());
+  }
+
+  /* ── Build category pills dynamically from dataset ──────── */
+  function buildCategoryPills() {
+    const cats = Array.from(new Set(_allNews.map(n => n.category).filter(Boolean))).sort();
+    if (!cats.length) { categoriesBar.style.display = 'none'; return; }
+    // Reset row, keeping the eyebrow label
+    const eyebrow = categoriesBar.querySelector('.news-explore-eyebrow');
+    categoriesBar.innerHTML = '';
+    if (eyebrow) categoriesBar.appendChild(eyebrow);
+
+    const allBtn = document.createElement('button');
+    allBtn.type = 'button';
+    allBtn.className = 'naf-pill is-active';
+    allBtn.dataset.newsCategory = '';
+    allBtn.textContent = 'Усі';
+    categoriesBar.appendChild(allBtn);
+
+    cats.forEach(c => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'naf-pill';
+      btn.dataset.newsCategory = c;
+      btn.textContent = c;
+      categoriesBar.appendChild(btn);
+    });
+  }
+
+  /* ── View pill clicks (top row) ─────────────────────────── */
+  viewBar.querySelectorAll('[data-news-view]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const v = btn.dataset.newsView;
+      if (v === _view && !_selectedDate) return;
+      _view = v;
+      _selectedDate = null;
+      if (datePicker) datePicker.value = '';
+      dateClear.hidden = true;
+      viewBar.querySelectorAll('[data-news-view]').forEach(p => p.classList.toggle('is-active', p === btn));
+      applyAndRender();
+    });
+  });
+
+  /* ── Category pill clicks (delegated) ───────────────────── */
+  categoriesBar.addEventListener('click', e => {
+    const btn = e.target.closest('[data-news-category]');
+    if (!btn) return;
+    const c = btn.dataset.newsCategory || null;
+    _selectedCategory = c;
+    categoriesBar.querySelectorAll('[data-news-category]').forEach(p => p.classList.toggle('is-active', p === btn));
+    applyAndRender();
+  });
+
+  /* ── Date picker ────────────────────────────────────────── */
+  if (datePicker) {
+    datePicker.addEventListener('change', function () {
+      _selectedDate = this.value || null;
+      dateClear.hidden = !_selectedDate;
+      // Date wins over view — deactivate view pills.
+      viewBar.querySelectorAll('[data-news-view]').forEach(p => p.classList.remove('is-active'));
+      applyAndRender();
+    });
+  }
+  if (dateClear) {
+    dateClear.addEventListener('click', function () {
+      _selectedDate = null;
+      datePicker.value = '';
+      dateClear.hidden = true;
+      viewBar.querySelectorAll('[data-news-view]').forEach(p => p.classList.toggle('is-active', p.dataset.newsView === _view));
+      applyAndRender();
+    });
+  }
+
+  /* ── Featured story bootstrap ───────────────────────────── */
+  function renderFeatured(news) {
+    featuredMount.innerHTML =
+      '<div class="featured-card news-item">' +
+        '<img src="' + esc(news.img) + '" alt="' + esc(news.title) + '" loading="lazy" />' +
+        '<div class="featured-content">' +
+          '<div>' +
+            '<span class="tag">' + esc(news.category) + '</span> ' +
+            '<span class="date"><i class="fa-regular fa-calendar"></i> ' + esc(news.date) + '</span>' +
+          '</div>' +
+          '<h3>' + esc(news.title) + '</h3>' +
+          '<p class="summary">' + esc(news.text) + '</p>' +
+          '<div class="author"><i class="fa-solid fa-user"></i> ' + esc(news.author) + '</div>' +
+          '<div class="news-details"><p>' + esc(news.text) + '</p></div>' +
+          '<button class="toggle-details">Детальніше <i class="fa-solid fa-arrow-right"></i></button>' +
+        '</div>' +
+      '</div>';
+  }
+
+  (async function bootstrapFeatured() {
+    if (!featuredMount) return;
+    if (!window.FCV || !FCV.NewsService) {
+      FCV.UI && FCV.UI.error(featuredState, 'CMS-шар не завантажено');
+      return;
+    }
+    FCV.UI.loading(featuredState, 'Завантажуємо головну новину…');
+    try {
+      const featured = await FCV.NewsService.getFeaturedNews();
+      if (!featured) {
+        FCV.UI.empty(featuredState, 'Немає головної новини', 'Позначте новину featured=true у Strapi');
+        return;
+      }
+      FCV.UI.clear(featuredState);
+      renderFeatured(featured);
+    } catch (e) {
+      FCV.UI.error(featuredState, 'Не вдалося завантажити головну новину', e);
+    }
+  })();
+
+  /* ── Grid bootstrap ─────────────────────────────────────── */
+  (async function bootstrapNews() {
+    if (!newsGrid) return;
+    if (!window.FCV || !FCV.NewsService) {
+      FCV.UI && FCV.UI.error(newsGridState, 'CMS-шар не завантажено');
+      return;
+    }
+    FCV.UI.loading(newsGridState, 'Завантажуємо новини…');
+    try {
+      const apiNews = await FCV.NewsService.getNews({ pageSize: 100 });
+      _allNews = apiNews;
+
+      if (!_allNews.length) {
+        FCV.UI.empty(newsGridState, 'Поки що немає новин', 'Опублікуйте новину у Strapi');
+        return;
+      }
+      buildCategoryPills();
+      applyAndRender();
+    } catch (e) {
+      FCV.UI.error(newsGridState, 'Не вдалося завантажити новини', e);
+    }
+  })();
+  // ===== NEWS UX REWORK END =====
+
+  /* ── Modal (kept — opens via .toggle-details on news cards) ── */
+  const modalOverlay = document.getElementById('modalOverlay');
+  const closeModal   = document.getElementById('closeModal');
+  const modalTitle   = document.getElementById('modalTitle');
+  const modalText    = document.getElementById('modalText');
+
+  // ===== TOGGLE-DETAILS CLICK FIX =====
+  // PRIOR BUG: e.target.classList check failed when click landed on the
+  // <i class="fa-arrow-right"></i> icon inside the button (target was the
+  // <i>, not the <button>). Using closest('.toggle-details') matches both
+  // the button itself and any descendant click target.
+  document.addEventListener('click', e => {
+    const btn = e.target.closest && e.target.closest('.toggle-details');
+    if (!btn) return;
+    const card = btn.closest('.news-item, .news-card, .featured-card');
+    if (!card) return;
+    modalTitle.textContent = card.querySelector('h3, h4')?.textContent || 'Новина';
+    modalText.textContent  = card.querySelector('.news-details p')?.textContent || card.querySelector('p')?.textContent || 'Деталі відсутні.';
+    modalOverlay.style.display = 'flex';
+  });
+  // ===== TOGGLE-DETAILS CLICK FIX END =====
+
+  closeModal.addEventListener('click', () => { modalOverlay.style.display = 'none'; });
+  modalOverlay.addEventListener('click', e => { if (e.target === modalOverlay) modalOverlay.style.display = 'none'; });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') modalOverlay.style.display = 'none'; });
+
+})();
+</script>
+
+</body>
+</html>

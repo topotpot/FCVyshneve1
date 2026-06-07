@@ -1,0 +1,446 @@
+/* ================================================================
+   CINEMATIC MATCHES UPGRADE — matches.cinematic.css
+   FC Vyshneve
+
+   Scoped entirely to body.cm-active — zero output without it.
+   Remove body.cm-active → instant full rollback.
+   ================================================================ */
+
+/* ===== NEW FEATURE START: CINEMATIC MATCHES UPGRADE ===== */
+
+/* ── PAGE HERO: watermark ─────────────────────────────────────── */
+.cm-active .matches-header {
+  overflow: hidden;
+}
+
+.cm-active .matches-header::after {
+  content: 'МАТЧІ';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--f-number, 'Bebas Neue', sans-serif);
+  font-size: 14vw;
+  white-space: nowrap;
+  color: rgba(255,255,255,.02);
+  letter-spacing: .08em;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+.cm-active .matches-header h2,
+.cm-active .matches-header p {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── MATCHES LIST: refined gap ─────────────────────────────────── */
+.cm-active .matches {
+  gap: var(--sp-5, 1.25rem);
+}
+
+/* ── MATCH CARD: stripped for cinematic inner ────────────────── */
+.cm-active .match-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Hide all original inner elements; cm-match-inner takes over */
+.cm-active .match-card > *:not(.cm-match-inner) {
+  display: none !important;
+}
+
+/* ── CINEMATIC MATCH INNER ─────────────────────────────────────── */
+.cm-active .cm-match-inner {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4, 1rem);
+  padding: var(--sp-5, 1.25rem) var(--sp-7, 1.75rem) var(--sp-5, 1.25rem);
+  isolation: isolate;
+}
+
+/* ── ATMOSPHERE LAYER ─────────────────────────────────────────── */
+.cm-active .cm-atmo {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 110%, rgba(167,31,69,.07) 0%, transparent 58%);
+  pointer-events: none;
+  z-index: -1;
+  transition: opacity .4s ease;
+}
+
+/* ── TOP ROW: tournament + status badge ───────────────────────── */
+.cm-active .cm-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3, .75rem);
+}
+
+.cm-active .cm-tournament {
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .6rem;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(230,121,151,.58);
+}
+
+.cm-active .cm-badge {
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .54rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  padding: .18rem .62rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.cm-active .cm-badge--upcoming {
+  background: rgba(167,31,69,.15);
+  color: rgba(230,121,151,.9);
+  border-color: rgba(197,47,90,.28);
+}
+
+.cm-active .cm-badge--finished {
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.42);
+  border-color: rgba(255,255,255,.1);
+}
+
+.cm-active .cm-badge--live {
+  background: rgba(60,200,80,.14);
+  color: #6ae383;
+  border-color: rgba(78,206,122,.28);
+  animation: cmLivePulse 2.2s ease-in-out infinite;
+}
+
+@keyframes cmLivePulse {
+  0%, 100% { box-shadow: none; }
+  50%       { box-shadow: 0 0 0 3px rgba(78,206,122,.12); }
+}
+
+/* ── DUEL: broadcast 3-column layout ─────────────────────────── */
+.cm-active .cm-duel {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: var(--sp-2, .5rem) 0;
+}
+
+/* ── TEAM SIDES ───────────────────────────────────────────────── */
+.cm-active .cm-side {
+  display: flex;
+  flex-direction: column;
+  gap: .28rem;
+}
+
+.cm-active .cm-side--left {
+  align-items: flex-start;
+  padding-right: var(--sp-5, 1.25rem);
+}
+
+.cm-active .cm-side--right {
+  align-items: flex-end;
+  text-align: right;
+  padding-left: var(--sp-5, 1.25rem);
+}
+
+.cm-active .cm-club {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: clamp(.92rem, 2vw, 1.18rem);
+  color: var(--c-white, #f5f5f7);
+  letter-spacing: .02em;
+  line-height: 1.2;
+}
+
+.cm-active .cm-venue-role {
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .5rem;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.28);
+}
+
+/* ── FOCAL: score / VS ────────────────────────────────────────── */
+.cm-active .cm-focal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .2rem;
+  padding: 0 var(--sp-5, 1.25rem);
+  position: relative;
+}
+
+/* Thin vertical separators */
+.cm-active .cm-focal::before,
+.cm-active .cm-focal::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 54%;
+  background: rgba(255,255,255,.07);
+}
+.cm-active .cm-focal::before { left: 0; }
+.cm-active .cm-focal::after  { right: 0; }
+
+.cm-active .cm-score-display {
+  font-family: var(--f-number, 'Bebas Neue', sans-serif);
+  font-size: clamp(2.2rem, 4.8vw, 3.2rem);
+  line-height: 1;
+  letter-spacing: .06em;
+  color: var(--c-white, #f5f5f7);
+  white-space: nowrap;
+  transition: transform .25s cubic-bezier(.16,1,.3,1), color .22s ease;
+}
+
+.cm-active .cm-score--win {
+  color: #78e596;
+}
+
+.cm-active .cm-score--loss {
+  color: rgba(255,255,255,.42);
+}
+
+.cm-active .cm-score--vs {
+  color: rgba(197,47,90,.55);
+  font-size: clamp(2rem, 4vw, 2.7rem);
+}
+
+.cm-active .cm-kick-off {
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .5rem;
+  letter-spacing: .12em;
+  color: rgba(255,255,255,.3);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ── FOOTER ROW: location + actions ──────────────────────────── */
+.cm-active .cm-row-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3, .75rem);
+  flex-wrap: wrap;
+  padding-top: var(--sp-3, .75rem);
+  border-top: 1px solid rgba(255,255,255,.05);
+}
+
+.cm-active .cm-venue {
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .64rem;
+  letter-spacing: .08em;
+  color: rgba(156,160,170,.48);
+  display: flex;
+  align-items: center;
+  gap: .38rem;
+}
+
+.cm-active .cm-venue i {
+  color: rgba(167,31,69,.52);
+  font-size: .58rem;
+}
+
+.cm-active .cm-actions {
+  display: flex;
+  gap: var(--sp-2, .5rem);
+  flex-wrap: wrap;
+}
+
+.cm-active .cm-action {
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .66rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: .42rem 1.05rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background .22s ease, box-shadow .22s ease, color .22s ease, border-color .22s ease;
+  border: 1px solid transparent;
+  background: none;
+}
+
+.cm-active .cm-action--primary {
+  background: var(--c-maroon, #a71f45);
+  color: #fff;
+  border-color: rgba(197,47,90,.38);
+}
+.cm-active .cm-action--primary:hover {
+  background: rgba(197,47,90,.9);
+  box-shadow: 0 0 18px rgba(167,31,69,.3);
+}
+
+.cm-active .cm-action--outline {
+  color: rgba(255,255,255,.58);
+  border-color: rgba(255,255,255,.14);
+}
+.cm-active .cm-action--outline:hover {
+  border-color: rgba(197,47,90,.42);
+  color: rgba(230,121,151,.82);
+}
+
+/* ── CARD HOVER: broadcast elevation ─────────────────────────── */
+.cm-active .matches-section .match-card:hover {
+  transform: translateY(-4px) scale(1.002);
+  border-top-color: rgba(197,47,90,.44);
+  border-color: rgba(197,47,90,.2);
+  box-shadow:
+    0 20px 56px rgba(0,0,0,.55),
+    0 0 0 1px rgba(197,47,90,.12),
+    0 0 42px rgba(197,47,90,.07),
+    inset 0 1px 0 rgba(255,255,255,.06);
+}
+
+.cm-active .matches-section .match-card:hover .cm-score-display {
+  transform: scale(1.07);
+}
+
+.cm-active .matches-section .match-card:hover .cm-score--win {
+  color: #92f5ac;
+}
+
+/* ── HERO MATCH PANEL: story mode ─────────────────────────────── */
+.cm-active .match-card.cm-hero {
+  border-top-color: rgba(197,47,90,.52);
+}
+
+.cm-active .cm-hero-inner {
+  min-height: 272px;
+  padding: var(--sp-7, 1.75rem) var(--sp-10, 2.5rem) var(--sp-6, 1.5rem);
+}
+
+/* Hero atmospheric gradient — stadium lighting */
+.cm-active .cm-hero-inner .cm-atmo {
+  background:
+    radial-gradient(ellipse at 18% 90%, rgba(167,31,69,.24) 0%, transparent 44%),
+    radial-gradient(ellipse at 82% 12%, rgba(40,18,55,.48) 0%, transparent 46%),
+    radial-gradient(ellipse at 50% 50%, rgba(167,31,69,.05) 0%, transparent 72%);
+  animation: cmHeroAtmo 14s ease-in-out infinite alternate;
+}
+
+@keyframes cmHeroAtmo {
+  0%   { opacity: .72; }
+  100% { opacity: 1; }
+}
+
+/* Broadcast pulse line */
+.cm-active .cm-pulse-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(197,47,90,.9) 50%, transparent 100%);
+  transform-origin: center;
+  animation: cmPulseLine 4.8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes cmPulseLine {
+  0%, 100% { opacity: .3; transform: scaleX(.35); }
+  50%       { opacity: 1;  transform: scaleX(1); }
+}
+
+/* Hero: oversized score */
+.cm-active .cm-hero-inner .cm-score-display {
+  font-size: clamp(3.2rem, 7vw, 5rem);
+}
+
+.cm-active .cm-hero-inner .cm-score--vs {
+  font-size: clamp(2.8rem, 6.2vw, 4.4rem);
+}
+
+/* Hero: larger team names */
+.cm-active .cm-hero-inner .cm-club {
+  font-size: clamp(1rem, 2.6vw, 1.45rem);
+}
+
+/* Hero: more breathing room in duel row */
+.cm-active .cm-hero-inner .cm-duel {
+  padding: var(--sp-3, .75rem) 0 var(--sp-2, .5rem);
+}
+
+.cm-active .matches-section .match-card.cm-hero:hover {
+  transform: translateY(-3px) scale(1.001);
+  box-shadow:
+    0 28px 72px rgba(0,0,0,.65),
+    0 0 0 1px rgba(197,47,90,.2),
+    0 0 58px rgba(197,47,90,.11),
+    inset 0 1px 0 rgba(255,255,255,.07);
+}
+
+/* ── MOBILE ────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .cm-active .cm-match-inner {
+    padding: var(--sp-4, 1rem) var(--sp-5, 1.25rem);
+    gap: var(--sp-3, .75rem);
+  }
+
+  .cm-active .cm-hero-inner {
+    min-height: 210px;
+    padding: var(--sp-5, 1.25rem) var(--sp-5, 1.25rem);
+  }
+
+  .cm-active .matches-header::after {
+    font-size: 22vw;
+  }
+
+  .cm-active .cm-side--left  { padding-right: var(--sp-3, .75rem); }
+  .cm-active .cm-side--right { padding-left:  var(--sp-3, .75rem); }
+  .cm-active .cm-focal       { padding: 0 var(--sp-3, .75rem); }
+
+  .cm-active .cm-club { font-size: .88rem; }
+
+  .cm-active .cm-score-display {
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
+  }
+
+  .cm-active .cm-hero-inner .cm-score-display {
+    font-size: clamp(2.4rem, 9vw, 3.5rem);
+  }
+
+  .cm-active .cm-hero-inner .cm-score--vs {
+    font-size: clamp(2rem, 8vw, 3rem);
+  }
+
+  .cm-active .cm-hero-inner .cm-club {
+    font-size: clamp(.88rem, 3vw, 1.15rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .cm-active .cm-match-inner {
+    padding: var(--sp-4, 1rem);
+  }
+
+  .cm-active .cm-focal::before,
+  .cm-active .cm-focal::after {
+    display: none;
+  }
+
+  .cm-active .cm-club {
+    font-size: .8rem;
+    letter-spacing: 0;
+  }
+
+  .cm-active .cm-venue {
+    display: none;
+  }
+
+  .cm-active .cm-row-meta {
+    justify-content: flex-end;
+  }
+}
+
+/* ===== NEW FEATURE END: CINEMATIC MATCHES UPGRADE ===== */

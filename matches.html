@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Матчі — ФК Вишневе</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Russo+One&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="matches.css" />
+  <link rel="stylesheet" href="header.cinematic.css" />
+  <link rel="stylesheet" href="matches.cinematic.css" />
+  <!-- nms.advanced.css kept for filter-bar visual classes (.naf-filters / .naf-pill) -->
+  <link rel="stylesheet" href="nms.advanced.css" />
+
+  <!-- CMS content layer -->
+  <script src="services/config.js"></script>
+  <script src="services/ui.js"></script>
+  <script src="services/matches.js"></script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+  <!-- Cinematic Header Module -->
+  <script src="modules/cinematicHeader.js" defer></script>
+  <script src="modules/cinematicMatches.js" defer></script>
+
+  <!-- ===== PLATFORM FIX START: match exploration redesign =====
+       nms.filters.js / nms.advanced.js are intentionally NOT loaded on this
+       page. Match filtering is now data-first (see inline script below):
+       the filter operates on the cached matches array and re-renders the
+       container — it never reaches into the DOM to hide cards.
+       ===== PLATFORM FIX END ===== -->
+
+  <style>
+    /* Match exploration UI — tightly scoped, reuses .naf-pill visual style */
+    .match-explore {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--sp-3, .75rem);
+      justify-content: center;
+      max-width: 940px;
+      margin: 0 auto;
+      padding: var(--sp-5, 1.25rem) var(--sp-6, 1.5rem) var(--sp-3, .75rem);
+    }
+    .match-explore .naf-pill { background: rgba(8,8,12,.5); border: 1px solid rgba(255,255,255,.06); }
+    .match-explore .naf-pill.is-active { background: linear-gradient(135deg, rgba(167,31,69,.28) 0%, rgba(167,31,69,.14) 100%); border-color: rgba(197,47,90,.45); }
+    .match-explore-date {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      padding: .35rem .8rem .35rem 1rem;
+      border-radius: 999px;
+      background: rgba(8,8,12,.5);
+      border: 1px solid rgba(255,255,255,.08);
+      font-family: var(--f-heading, 'Oswald', sans-serif);
+      font-size: .55rem;
+      letter-spacing: .24em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.5);
+    }
+    .match-explore-date input[type="date"] {
+      background: transparent;
+      border: 0;
+      color: rgba(255,255,255,.9);
+      font-family: var(--f-heading, 'Oswald', sans-serif);
+      font-size: .68rem;
+      letter-spacing: .12em;
+      padding: .18rem .25rem;
+      color-scheme: dark;
+      cursor: pointer;
+    }
+    .match-explore-date button {
+      background: transparent;
+      border: 0;
+      color: rgba(230,121,151,.7);
+      font-family: var(--f-heading, 'Oswald', sans-serif);
+      font-size: .58rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      padding: .2rem .4rem;
+      border-radius: 999px;
+      transition: color .2s ease, background .2s ease;
+    }
+    .match-explore-date button:hover { color: #fff; background: rgba(197,47,90,.18); }
+    .match-explore-date button[hidden] { display: none; }
+    @media (max-width: 640px) {
+      .match-explore { gap: .35rem; padding: var(--sp-4, 1rem); }
+      .match-explore .naf-pill { padding: .45rem .8rem; font-size: .54rem; letter-spacing: .16em; }
+      .match-explore-date { flex-basis: 100%; justify-content: center; margin-top: .35rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── MENU BACKDROP ─────────────────────────────────────────── -->
+<div class="menu-backdrop" id="menuBackdrop"></div>
+
+<!-- ── HEADER ────────────────────────────────────────────────── -->
+<header class="header" id="mainHeader">
+  <div class="burger-container">
+    <a href="index.html" class="logo-block">
+      <img src="img/logo.png" alt="Логотип ФК Вишневе" class="club-logo" />
+      <span class="club-name">ФК Вишневе</span>
+    </a>
+    <div class="burger" id="burger" aria-label="Відкрити меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </div>
+    <nav class="menu" id="menu">
+      <ul>
+        <li><a href="index.html">Головна</a></li>
+        <li><a href="about.html">Про нас</a></li>
+        <li class="has-submenu">
+          <div class="menu-item">
+            <a href="teams.html">Команди</a>
+            <span class="arrow">&#9662;</span>
+          </div>
+          <ul class="submenu">
+            <li><a href="team1.html?team=main">Головна команда</a></li>
+            <li><a href="team1.html?team=youth">Молодіжка</a></li>
+            <li><a href="team1.html?team=u-19">U-19</a></li>
+          </ul>
+        </li>
+        <li><a href="matches.html" class="nav-active">Матчі</a></li>
+        <li><a href="news.html">Новини</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ── PAGE HERO ─────────────────────────────────────────────── -->
+<div class="matches-header">
+  <h2>Матчі</h2>
+  <p>Результати та розклад ігор ФК Вишневе</p>
+</div>
+
+<!-- ── MATCH EXPLORATION BAR (view pills + date picker) ──────── -->
+<div class="match-explore" role="toolbar" aria-label="Фільтр матчів">
+  <button type="button" class="naf-pill is-active" data-match-view="all">Усі</button>
+  <button type="button" class="naf-pill" data-match-view="upcoming">Майбутні</button>
+  <button type="button" class="naf-pill" data-match-view="completed">Минулі</button>
+  <span class="match-explore-date">
+    <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+    <input type="date" id="matchDatePicker" aria-label="Вибрати дату" />
+    <button type="button" id="matchDateClear" hidden aria-label="Скинути дату">×</button>
+  </span>
+</div>
+
+<!-- ── MATCHES LIST ───────────────────────────────────────────── -->
+<div class="matches-section">
+  <div class="matches" id="matchesContainer"></div>
+  <div id="matchesState"></div>
+</div>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── Navigation (unchanged) ───────────────────────────────── */
+  const burger   = document.getElementById('burger');
+  const menu     = document.getElementById('menu');
+  const backdrop = document.getElementById('menuBackdrop');
+  const header   = document.getElementById('mainHeader');
+
+  function openMenu() { menu.classList.add('active'); burger.classList.add('active'); backdrop.classList.add('active'); burger.setAttribute('aria-expanded', 'true'); document.body.style.overflow = 'hidden'; }
+  function closeMenu() { menu.classList.remove('active'); burger.classList.remove('active'); backdrop.classList.remove('active'); burger.setAttribute('aria-expanded', 'false'); document.body.style.overflow = ''; }
+
+  burger.addEventListener('click', () => menu.classList.contains('active') ? closeMenu() : openMenu());
+  backdrop.addEventListener('click', closeMenu);
+  menu.querySelectorAll('a').forEach(l => l.addEventListener('click', closeMenu));
+
+  document.querySelectorAll('.has-submenu .arrow').forEach(arrow => {
+    arrow.addEventListener('click', e => {
+      e.stopPropagation();
+      arrow.closest('.has-submenu').classList.toggle('open');
+    });
+  });
+
+  let lastY = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    header.classList.toggle('hide',     y > lastY && y > 60);
+    header.classList.toggle('scrolled', y > 20);
+    lastY = y <= 0 ? 0 : y;
+  }, { passive: true });
+
+  /* ============================================================
+     ===== PLATFORM FIX START: match exploration (data-first) =====
+
+     Architecture:
+       _allMatches   = full fetched dataset, owned here in memory
+       _view         = 'all' | 'upcoming' | 'completed'
+       _selectedDate = ISO yyyy-mm-dd or null
+       applyAndRender() = filter+sort the dataset, then renderMatches()
+
+     We never call querySelector to hide/show cards. Filtering is
+     a pure transform over the array, and the container is
+     re-rendered from scratch on every change. The cinematic
+     module's MutationObserver picks up each new card and enhances
+     it; __resetCinematicMatchesHero clears the hero-assigned flag
+     so the first card in the new batch becomes hero again.
+     ============================================================ */
+  const container = document.getElementById('matchesContainer');
+  const stateEl   = document.getElementById('matchesState');
+  const datePicker = document.getElementById('matchDatePicker');
+  const dateClear  = document.getElementById('matchDateClear');
+  const viewBar    = document.querySelector('.match-explore');
+
+  let _allMatches  = [];
+  let _view        = 'all';
+  let _selectedDate = null;
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  /* Strip time from a Date — comparisons are by calendar day only */
+  function startOfDay(d) {
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+  }
+  function matchDay(m) {
+    if (!m.iso) return null;
+    const d = new Date(m.iso);
+    if (isNaN(d)) return null;
+    return startOfDay(d);
+  }
+
+  function renderMatchCard(m) {
+    const card = document.createElement('div');
+    card.className = 'match-card';
+    if (m.iso) card.dataset.year = String(m.iso).slice(0, 4);
+
+    const statusClass = m.status === 'finished' ? 'finished'
+                      : m.status === 'live'     ? 'live'
+                      : 'future';
+    const statusLabel = m.status === 'finished' ? 'Завершено'
+                      : m.status === 'live'     ? 'LIVE'
+                      : 'Майбутній';
+    const venueClass  = m.type === 'away' ? 'away' : 'home';
+    const venueLabel  = m.type === 'away' ? 'В гостях' : 'Вдома';
+
+    let scoreBox = '';
+    if (m.homeScore != null && m.awayScore != null) {
+      const isHome = m.type !== 'away';
+      const us = isHome ? m.homeScore : m.awayScore;
+      const them = isHome ? m.awayScore : m.homeScore;
+      const tail = us > them ? ' — Перемога' : us < them ? ' — Поразка' : ' — Нічия';
+      scoreBox = '<div class="score-box"><i class="fa-solid fa-futbol"></i> ' +
+                 m.homeScore + ':' + m.awayScore + tail + '</div>';
+    }
+
+    // ===== MATCH UX REWORK START =====
+    // "ДЕТАЛЬНІШЕ" button removed. It led nowhere and was clutter that
+    // competed with the score / teams / status hierarchy. The score
+    // (when present) now stands on its own — cinematicMatches.js no
+    // longer finds .buttons .btn so it omits .cm-actions and the meta
+    // row sits left-aligned with just the venue, balanced cleanly.
+    card.innerHTML =
+      '<div class="top-labels">' +
+        '<span class="label ' + statusClass + '">' + statusLabel + '</span>' +
+        '<span class="tournament">' + esc(m.competition) + '</span>' +
+        '<span class="label ' + venueClass + '">' + venueLabel + '</span>' +
+      '</div>' +
+      '<div class="teams">' + esc(m.home) + ' — ' + esc(m.away) + '</div>' +
+      '<div class="date-time">' +
+        '<i class="fa-regular fa-calendar"></i> ' + esc(m.date) +
+        (m.time ? ' <i class="fa-regular fa-clock"></i> ' + esc(m.time) : '') +
+      '</div>' +
+      (m.stadium
+        ? '<div class="location"><i class="fa-solid fa-location-dot"></i> ' + esc(m.stadium) + '</div>'
+        : '') +
+      scoreBox;
+    // ===== MATCH UX REWORK END =====
+
+    return card;
+  }
+
+  /* Filter + sort the cached dataset for the current view/date */
+  function selectMatches() {
+    const today = startOfDay(new Date());
+    let pool = _allMatches.filter(m => {
+      // Guard: matches without parseable iso dates are excluded from all
+      // date-based views. They still appear under "Усі".
+      return _selectedDate || _view === 'all' || matchDay(m) != null;
+    });
+
+    if (_selectedDate) {
+      const target = startOfDay(new Date(_selectedDate));
+      pool = pool.filter(m => matchDay(m) === target);
+      pool.sort((a, b) => (a.iso || '').localeCompare(b.iso || ''));
+    } else if (_view === 'upcoming') {
+      pool = pool.filter(m => matchDay(m) >= today);
+      pool.sort((a, b) => (a.iso || '').localeCompare(b.iso || ''));
+    } else if (_view === 'completed') {
+      pool = pool.filter(m => matchDay(m) < today);
+      pool.sort((a, b) => (b.iso || '').localeCompare(a.iso || ''));
+    } else { /* all */
+      pool.sort((a, b) => (b.iso || '').localeCompare(a.iso || ''));
+    }
+    return pool;
+  }
+
+  function renderMatches(list) {
+    if (window.__resetCinematicMatchesHero) window.__resetCinematicMatchesHero();
+    container.innerHTML = '';
+
+    if (!list.length) {
+      const msg = _selectedDate
+        ? 'Немає матчів на цю дату'
+        : _view === 'upcoming' ? 'Немає майбутніх матчів'
+        : _view === 'completed' ? 'Немає завершених матчів'
+        : 'Поки що немає матчів';
+      FCV.UI.empty(stateEl, msg, _selectedDate
+        ? 'Спробуйте іншу дату або скиньте фільтр'
+        : 'Додайте матч у адмін-панелі Strapi');
+      return;
+    }
+
+    FCV.UI.clear(stateEl);
+    const frag = document.createDocumentFragment();
+    list.forEach(m => frag.appendChild(renderMatchCard(m)));
+    container.appendChild(frag);
+  }
+
+  function applyAndRender() {
+    renderMatches(selectMatches());
+  }
+
+  /* ── View pill clicks ───────────────────────────────────── */
+  viewBar.addEventListener('click', function (e) {
+    const btn = e.target.closest('[data-match-view]');
+    if (!btn) return;
+    const v = btn.dataset.matchView;
+    if (v === _view && !_selectedDate) return;
+    _view = v;
+    _selectedDate = null;
+    if (datePicker) datePicker.value = '';
+    dateClear.hidden = true;
+    viewBar.querySelectorAll('.naf-pill').forEach(p => p.classList.toggle('is-active', p === btn));
+    applyAndRender();
+  });
+
+  /* ── Date picker ────────────────────────────────────────── */
+  if (datePicker) {
+    datePicker.addEventListener('change', function () {
+      _selectedDate = this.value || null;
+      dateClear.hidden = !_selectedDate;
+      // Date picker wins over view — visually deactivate view pills.
+      viewBar.querySelectorAll('.naf-pill').forEach(p => p.classList.remove('is-active'));
+      applyAndRender();
+    });
+  }
+  if (dateClear) {
+    dateClear.addEventListener('click', function () {
+      _selectedDate = null;
+      datePicker.value = '';
+      dateClear.hidden = true;
+      // Restore the previously active view's visual state
+      viewBar.querySelectorAll('.naf-pill').forEach(p => p.classList.toggle('is-active', p.dataset.matchView === _view));
+      applyAndRender();
+    });
+  }
+
+  /* ── CMS bootstrap ──────────────────────────────────────── */
+  (async function bootstrapMatches() {
+    if (!container) return;
+    if (!window.FCV || !FCV.MatchesService) {
+      FCV.UI && FCV.UI.error(stateEl, 'CMS-шар не завантажено');
+      return;
+    }
+    FCV.UI.loading(stateEl, 'Завантажуємо матчі…');
+    try {
+      _allMatches = await FCV.MatchesService.getMatches({ pageSize: 200 });
+      // Strapi guard: drop entries with no parseable matchDate so they
+      // don't poison the upcoming/completed views silently.
+      const valid = _allMatches.filter(m => matchDay(m) != null);
+      const missing = _allMatches.length - valid.length;
+      if (missing > 0) console.warn('[FCV] matches with invalid matchDate dropped:', missing);
+      _allMatches = valid;
+
+      if (!_allMatches.length) {
+        FCV.UI.empty(stateEl, 'Поки що немає матчів', 'Додайте матч у адмін-панелі Strapi');
+        return;
+      }
+      applyAndRender();
+    } catch (e) {
+      FCV.UI.error(stateEl, 'Не вдалося завантажити матчі', e);
+    }
+  })();
+  // ===== PLATFORM FIX END =====
+
+})();
+</script>
+
+</body>
+</html>

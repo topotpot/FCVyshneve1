@@ -1,0 +1,230 @@
+/* ================================================================
+   NEWS & MATCH SORTING SYSTEM — nms.filters.css
+   FC Vyshneve
+
+   Scoped entirely to body.nms-active.
+   Remove body.nms-active → instant full rollback.
+   ================================================================ */
+
+/* ===== NEW FEATURE START: NEWS & MATCH SORTING SYSTEM ===== */
+
+/* ── HIDE LEGACY YEAR FILTER (matches page) ──────────────────── */
+.nms-active .year-filter {
+  display: none !important;
+}
+
+/* ── FILTER BAR ──────────────────────────────────────────────── */
+.nms-filters {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  padding: var(--sp-5, 1.25rem) var(--sp-6, 1.5rem) var(--sp-4, 1rem);
+  max-width: 760px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.nms-filters-label {
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .56rem;
+  font-weight: 500;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.3);
+  margin-right: var(--sp-3, .75rem);
+}
+
+.nms-pill {
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .6rem;
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  padding: .55rem 1.15rem;
+  border-radius: 999px;
+  background: rgba(8, 8, 12, .55);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid rgba(255,255,255,.08);
+  color: rgba(255,255,255,.5);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition:
+    background .32s ease,
+    color .32s ease,
+    border-color .32s ease,
+    box-shadow .35s ease,
+    transform .25s ease;
+}
+
+/* Cinematic underline reveal */
+.nms-pill::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 0;
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent 0%, rgba(197,47,90,.95) 50%, transparent 100%);
+  transition: width .45s cubic-bezier(.16,1,.3,1);
+  pointer-events: none;
+}
+
+/* Soft hover lighting */
+.nms-pill:hover {
+  color: rgba(230,121,151,.92);
+  border-color: rgba(197,47,90,.32);
+  background: rgba(20, 12, 18, .65);
+}
+
+.nms-pill:hover::after {
+  width: 64%;
+}
+
+.nms-pill.is-active {
+  background: rgba(167,31,69,.2);
+  color: #fff;
+  border-color: rgba(197,47,90,.6);
+  box-shadow:
+    0 0 26px rgba(167,31,69,.22),
+    inset 0 1px 0 rgba(255,255,255,.05);
+}
+
+.nms-pill.is-active::after {
+  width: 82%;
+  background: linear-gradient(90deg, transparent 0%, rgba(197,47,90,1) 50%, transparent 100%);
+}
+
+/* ── EMPTY STATE ─────────────────────────────────────────────── */
+.nms-empty {
+  display: none;
+  padding: var(--sp-12, 3rem) var(--sp-6, 1.5rem);
+  text-align: center;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.nms-empty.is-visible {
+  display: block;
+}
+
+.nms-empty-icon {
+  font-size: 1.4rem;
+  color: rgba(167,31,69,.45);
+  margin-bottom: var(--sp-3, .75rem);
+}
+
+.nms-empty-title {
+  font-family: var(--f-number, 'Bebas Neue', sans-serif);
+  font-size: 1.5rem;
+  letter-spacing: .04em;
+  color: rgba(255,255,255,.7);
+  margin-bottom: var(--sp-2, .5rem);
+}
+
+.nms-empty-text {
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .66rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  color: rgba(255,255,255,.38);
+  text-transform: uppercase;
+}
+
+/* ── FILTER HIDDEN STATE ─────────────────────────────────────── */
+.nms-active .nms-hidden {
+  display: none !important;
+}
+
+/* ── NEWS GRID ALIGNMENT FIX ─────────────────────────────────── */
+.nms-active .news-grid {
+  align-items: stretch;
+  grid-auto-rows: 1fr;
+}
+
+.nms-active .news-grid .news-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Lock h4 to exactly 2 lines so cards align */
+.nms-active .news-grid .news-card h4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(1.22rem * 1.15 * 2);
+}
+
+/* Lock p to exactly 2 lines */
+.nms-active .news-grid .news-card p {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(.82rem * 1.6 * 2);
+}
+
+/* Button always at the bottom for consistent baseline */
+.nms-active .news-grid .news-card .toggle-details {
+  margin-top: auto;
+}
+
+/* ── MATCH CARDS ALIGNMENT FIX ───────────────────────────────── */
+/* Consistent focal column width — score and VS look balanced */
+.nms-active .cm-focal {
+  min-width: 110px;
+}
+
+/* Single-line team names so duel row is always level */
+.nms-active .cm-club {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Hero card focal slightly wider — accommodates oversized score */
+.nms-active .cm-hero-inner .cm-focal {
+  min-width: 150px;
+}
+
+/* ── MOBILE ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .nms-filters {
+    padding: var(--sp-4, 1rem);
+    gap: .4rem;
+  }
+
+  .nms-filters-label {
+    flex-basis: 100%;
+    text-align: center;
+    margin-right: 0;
+    margin-bottom: var(--sp-2, .5rem);
+  }
+
+  .nms-pill {
+    padding: .45rem .9rem;
+    font-size: .54rem;
+    letter-spacing: .18em;
+  }
+
+  .nms-active .cm-focal {
+    min-width: 80px;
+  }
+  .nms-active .cm-hero-inner .cm-focal {
+    min-width: 110px;
+  }
+}
+
+@media (max-width: 480px) {
+  .nms-active .cm-club {
+    white-space: normal;
+  }
+}
+
+/* ===== NEW FEATURE END: NEWS & MATCH SORTING SYSTEM ===== */

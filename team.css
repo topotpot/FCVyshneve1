@@ -1,0 +1,232 @@
+/* ============================================================
+   TEAM ROSTER PAGE — page-specific styles
+   Global styles → styles.css
+   ============================================================ */
+
+body {
+  padding-top: var(--header-h, 70px);
+  background: var(--c-base, #070709);
+  color: var(--c-white, #f5f5f7);
+}
+
+/* ── TEAM BANNER ─────────────────────────────────────────────── */
+.team-banner {
+  position: relative;
+  width: 100%;
+  height: 340px;
+  overflow: hidden;
+}
+.team-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+  transition: transform 8s ease;
+}
+.team-banner:hover .team-banner-img { transform: scale(1.05); }
+
+.team-banner-text {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(7,7,9,.92) 0%, rgba(7,7,9,.45) 52%, rgba(7,7,9,.08) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: var(--sp-10, 2.5rem) var(--sp-6, 1.5rem);
+  text-align: center;
+}
+.team-banner-text h1 {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  color: var(--c-white, #fff);
+  letter-spacing: .1em;
+  margin: 0;
+  line-height: 1;
+}
+.team-banner-text h2 {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: clamp(1.2rem, 4vw, 2rem);
+  color: var(--c-pink, #c89aaa);
+  margin: var(--sp-2, .5rem) 0;
+}
+.team-banner-text p {
+  color: var(--c-muted, #9ca0aa);
+  font-size: .95rem;
+  margin: 0;
+}
+
+/* ── POSITION LABEL ──────────────────────────────────────────── */
+.position-label {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: 1rem;
+  color: rgba(255,255,255,.82);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: var(--sp-6, 1.5rem) var(--sp-6, 1.5rem) var(--sp-3, .75rem);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3, .75rem);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.position-label::before {
+  content: '';
+  display: block;
+  width: 30px;
+  height: 3px;
+  background: var(--c-maroon, #a71f45);
+  border-radius: 2px;
+}
+
+/* ── PLAYERS GRID ────────────────────────────────────────────── */
+.players-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-6, 1.5rem);
+  padding: var(--sp-4, 1rem) var(--sp-6, 1.5rem) var(--sp-12, 3rem);
+  justify-content: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── PLAYER FLIP CARD ────────────────────────────────────────── */
+.player-card {
+  perspective: 1100px;
+  cursor: pointer;
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.card-inner {
+  width: 200px;
+  height: 300px;
+  transition: transform .75s cubic-bezier(.16,1,.3,1);
+  transform-style: preserve-3d;
+  position: relative;
+}
+.player-card.flipped .card-inner { transform: rotateY(180deg); }
+
+.card-front, .card-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border-radius: var(--r-lg, 20px);
+  overflow: hidden;
+  box-shadow: var(--sh-md, 0 6px 24px rgba(0,0,0,.12));
+}
+
+/* FRONT */
+.card-front {
+  background: var(--c-surface, #17171c);
+  border: 1px solid var(--c-border, rgba(255,255,255,.055));
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow var(--tr-base, .3s);
+}
+.player-card:hover .card-front { box-shadow: 0 12px 48px rgba(0,0,0,.5), 0 0 0 1px rgba(197,47,90,.14); }
+
+.card-front img {
+  width: 100%;
+  height: 72%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  transition: transform .6s ease;
+}
+.player-card:not(.flipped):hover .card-front img { transform: scale(1.04); }
+
+.info {
+  flex: 1;
+  padding: var(--sp-3, .75rem);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: var(--c-surface, #17171c);
+}
+.info .name {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: .9rem;
+  color: var(--c-white, #f5f5f7);
+  margin-bottom: var(--sp-1, .25rem);
+  line-height: 1.3;
+}
+.info .position {
+  font-size: .78rem;
+  color: var(--c-maroon, #a71f45);
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+/* Flip hint */
+.card-front::after {
+  content: '↺ Деталі';
+  position: absolute;
+  bottom: var(--sp-2, .5rem);
+  right: var(--sp-3, .75rem);
+  font-size: .65rem;
+  color: rgba(167,31,69,.45);
+  letter-spacing: .06em;
+  font-weight: 600;
+}
+
+/* BACK */
+.card-back {
+  background: linear-gradient(135deg, var(--c-surface, #17171c) 0%, var(--c-maroon, #a71f45) 160%);
+  color: var(--c-white, #f5f5f7);
+  border: 1px solid rgba(197,47,90,.2);
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-6, 1.5rem);
+  text-align: center;
+  gap: var(--sp-3, .75rem);
+}
+.card-back::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(255,255,255,.08) 0%, transparent 65%);
+}
+
+.card-back h3 {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: 1.1rem;
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+.card-back .stars {
+  font-size: 1rem;
+  position: relative;
+  z-index: 1;
+  letter-spacing: .1em;
+}
+.card-back div:not(.stars) {
+  font-size: .82rem;
+  color: rgba(255,255,255,.75);
+  position: relative;
+  z-index: 1;
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .team-banner { height: 260px; }
+  .players-grid { gap: var(--sp-4, 1rem); padding: var(--sp-4, 1rem); }
+  .player-card { width: 160px; }
+  .card-inner  { width: 160px; height: 250px; }
+  .position-label { padding: var(--sp-5, 1.25rem) var(--sp-4, 1rem) var(--sp-2, .5rem); }
+}
+
+@media (max-width: 480px) {
+  .team-banner { height: 220px; }
+  .players-grid { gap: var(--sp-3, .75rem); padding: var(--sp-4, 1rem) var(--sp-3, .75rem); }
+  .player-card { width: 145px; }
+  .card-inner  { width: 145px; height: 230px; }
+}

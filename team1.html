@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Склад команди — ФК Вишневе</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Russo+One&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="team.css" />
+  <link rel="stylesheet" href="header.cinematic.css" />
+  <link rel="stylesheet" href="team.cinematic.css" />
+
+  <!-- CMS content layer -->
+  <script src="services/config.js"></script>
+  <script src="services/ui.js"></script>
+  <script src="services/teams.js"></script>
+  <script src="services/players.js"></script>
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js" defer></script>
+  <!-- Cinematic Header Module -->
+  <script src="modules/cinematicHeader.js" defer></script>
+  <script src="modules/cinematicTeam.js" defer></script>
+</head>
+
+<body>
+
+<!-- ── MENU BACKDROP ─────────────────────────────────────────── -->
+<div class="menu-backdrop" id="menuBackdrop"></div>
+
+<!-- ── HEADER ────────────────────────────────────────────────── -->
+<header class="header" id="mainHeader">
+  <div class="burger-container">
+    <a href="index.html" class="logo-block">
+      <img src="img/logo.png" alt="Логотип ФК Вишневе" class="club-logo" />
+      <span class="club-name">ФК Вишневе</span>
+    </a>
+    <div class="burger" id="burger" aria-label="Відкрити меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </div>
+    <nav class="menu" id="menu">
+      <ul>
+        <li><a href="index.html">Головна</a></li>
+        <li><a href="about.html">Про нас</a></li>
+        <li class="has-submenu">
+          <div class="menu-item">
+            <a href="teams.html" class="nav-active">Команди</a>
+            <span class="arrow">&#9662;</span>
+          </div>
+          <ul class="submenu">
+            <li><a href="team1.html?team=main">Головна команда</a></li>
+            <li><a href="team1.html?team=youth">Молодіжка</a></li>
+            <li><a href="team1.html?team=u-19">U-19</a></li>
+          </ul>
+        </li>
+        <li><a href="matches.html">Матчі</a></li>
+        <li><a href="news.html">Новини</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ── TEAM BANNER (populated by CMS bootstrap) ───────────────── -->
+<section class="team-banner">
+  <img src="img/1.jpg" alt="" class="team-banner-img" id="teamBannerImg" loading="lazy" />
+  <div class="team-banner-text">
+    <img id="teamBannerLogo" alt="" loading="lazy"
+         style="display:none;max-height:64px;margin:0 auto var(--sp-3,.75rem);object-fit:contain;filter:drop-shadow(0 2px 12px rgba(0,0,0,.5));" />
+    <h1 id="teamBannerTitle">СКЛАД</h1>
+    <h2 id="teamBannerSeason">Сезон 2025 / 26</h2>
+    <p id="teamBannerSubtitle">Гравці та тренерський штаб</p>
+    <p id="teamBannerMeta"
+       style="display:none;font-family:var(--f-heading,'Oswald',sans-serif);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.42);margin-top:var(--sp-2,.5rem);"></p>
+  </div>
+</section>
+
+<!-- ── ROSTER MOUNT POINT ────────────────────────────────────── -->
+<div id="teamRoster"></div>
+<div id="teamRosterState"></div>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── Navigation ───────────────────────────────── */
+  const burger   = document.getElementById('burger');
+  const menu     = document.getElementById('menu');
+  const backdrop = document.getElementById('menuBackdrop');
+  const header   = document.getElementById('mainHeader');
+
+  function openMenu() {
+    menu.classList.add('active');
+    burger.classList.add('active');
+    backdrop.classList.add('active');
+    burger.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    menu.classList.remove('active');
+    burger.classList.remove('active');
+    backdrop.classList.remove('active');
+    burger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  burger.addEventListener('click', () => menu.classList.contains('active') ? closeMenu() : openMenu());
+  backdrop.addEventListener('click', closeMenu);
+  menu.querySelectorAll('a').forEach(l => l.addEventListener('click', closeMenu));
+
+  document.querySelectorAll('.has-submenu .arrow').forEach(arrow => {
+    arrow.addEventListener('click', e => {
+      e.stopPropagation();
+      arrow.closest('.has-submenu').classList.toggle('open');
+    });
+  });
+
+  let lastY = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    header.classList.toggle('hide',     y > lastY && y > 60);
+    header.classList.toggle('scrolled', y > 20);
+    lastY = y <= 0 ? 0 : y;
+  }, { passive: true });
+
+  /* ── CMS bootstrap ──────────────────────────────────────────── */
+  // ===== NEW FEATURE START: CMS CONTENT LAYER =====
+  const POSITIONS = [
+    { key: 'Воротар',     label: 'Голкіпери' },
+    { key: 'Захисник',    label: 'Захисники' },
+    { key: 'Півзахисник', label: 'Півзахисники' },
+    { key: 'Нападник',    label: 'Нападники' },
+  ];
+
+  const rosterRoot = document.getElementById('teamRoster');
+  const stateEl    = document.getElementById('teamRosterState');
+  const bannerImg  = document.getElementById('teamBannerImg');
+  const bannerTitle = document.getElementById('teamBannerTitle');
+  const bannerSub  = document.getElementById('teamBannerSubtitle');
+  const params = new URLSearchParams(location.search);
+  const teamSlug = (params.get('team') || 'main').trim();
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function starsFor(player) {
+    if (player.captain) return '★★★★★';
+    if (player.featured) return '★★★★★';
+    return '★★★★';
+  }
+
+  function ageSuffix(n) {
+    if (n == null) return '';
+    const last2 = n % 100, last = n % 10;
+    if (last2 >= 11 && last2 <= 14) return n + ' років';
+    if (last === 1) return n + ' рік';
+    if (last >= 2 && last <= 4) return n + ' роки';
+    return n + ' років';
+  }
+
+  function renderPlayerCard(player, positionLabel) {
+    const card = document.createElement('div');
+    card.className = 'player-card';
+    card.innerHTML =
+      '<div class="card-inner">' +
+        '<div class="card-front">' +
+          '<img src="' + esc(player.photo) + '" alt="' + esc(player.fullName) + '" loading="lazy">' +
+          '<div class="info">' +
+            '<div class="name">' + esc(player.fullName) + '</div>' +
+            '<div class="position">' + esc(player.position || positionLabel) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card-back">' +
+          '<h3>' + esc(player.fullName) + '</h3>' +
+          '<div class="stars">' + starsFor(player) + '</div>' +
+          (player.age != null ? '<div>Вік: ' + esc(ageSuffix(player.age)) + '</div>' : '') +
+          (player.shortBio
+            ? '<div>' + esc(player.shortBio) + '</div>'
+            : (player.nationality ? '<div>' + esc(player.nationality) + '</div>' : '')) +
+        '</div>' +
+      '</div>';
+    return card;
+  }
+
+  function renderPositionGroup(positionLabel, players) {
+    const label = document.createElement('div');
+    label.className = 'position-label';
+    label.textContent = positionLabel;
+    rosterRoot.appendChild(label);
+
+    const grid = document.createElement('div');
+    grid.className = 'players-grid';
+    players.forEach(p => grid.appendChild(renderPlayerCard(p, positionLabel)));
+    rosterRoot.appendChild(grid);
+  }
+
+  function applyTeamBanner(team) {
+    if (!team) return;
+    // ===== TEAM HERO IMAGE FIX START =====
+    // Always apply the resolved cover URL. `mapTeam` already cascades
+    // coverImage → logo → static fallback, so `team.cover` is always a
+    // real, loadable URL — the previous `!== 'img/1.jpg'` guard caused
+    // a silent skip whenever the editor hadn't uploaded coverImage,
+    // making every team page show the same hardcoded shell image.
+    if (bannerImg && team.cover) {
+      bannerImg.src = team.cover;
+      bannerImg.alt = team.name || '';
+    }
+    // ===== TEAM HERO IMAGE FIX END =====
+    if (team.name && bannerTitle) bannerTitle.textContent = team.name;
+    if (team.shortDescription && bannerSub) bannerSub.textContent = team.shortDescription;
+
+    const logoEl = document.getElementById('teamBannerLogo');
+    if (logoEl && team.logo && team.logo !== 'img/logo.png') {
+      logoEl.src = team.logo;
+      logoEl.alt = team.name ? team.name + ' — логотип' : '';
+      logoEl.style.display = 'block';
+    }
+
+    const metaEl = document.getElementById('teamBannerMeta');
+    if (metaEl) {
+      const parts = [];
+      if (team.stadium)     parts.push(team.stadium);
+      if (team.foundedYear) parts.push('Заснована ' + team.foundedYear);
+      if (parts.length) {
+        metaEl.textContent = parts.join(' · ');
+        metaEl.style.display = 'block';
+      }
+    }
+  }
+
+  (async function bootstrapRoster() {
+    if (!rosterRoot) return;
+    if (!window.FCV || !FCV.PlayersService || !FCV.TeamsService) {
+      FCV.UI && FCV.UI.error(stateEl, 'CMS-шар не завантажено');
+      return;
+    }
+    FCV.UI.loading(stateEl, 'Завантажуємо склад…');
+    try {
+      const [team, players] = await Promise.all([
+        FCV.TeamsService.getTeamBySlug(teamSlug).catch(() => null),
+        FCV.PlayersService.getPlayers({ teamSlug: teamSlug, pageSize: 200 }),
+      ]);
+
+      applyTeamBanner(team);
+
+      if (!players.length) {
+        FCV.UI.empty(
+          stateEl,
+          'Поки що немає гравців',
+          'Додайте гравців у Strapi з полем team = «' + teamSlug + '»'
+        );
+        return;
+      }
+      FCV.UI.clear(stateEl);
+
+      const grouped = {};
+      players.forEach(p => {
+        const k = p.position || 'Інше';
+        (grouped[k] = grouped[k] || []).push(p);
+      });
+
+      POSITIONS.forEach(p => {
+        const g = grouped[p.key];
+        if (g && g.length) renderPositionGroup(p.label, g);
+      });
+    } catch (e) {
+      FCV.UI.error(stateEl, 'Не вдалося завантажити склад', e);
+    }
+  })();
+  // ===== NEW FEATURE END: CMS CONTENT LAYER =====
+
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,374 @@
+/* ================================================================
+   CINEMATIC TEAM ROSTER — team.cinematic.css
+   FC Vyshneve
+
+   Scoped entirely to body.ct-active — zero output without it.
+   Remove body.ct-active → instant full rollback.
+   ================================================================ */
+
+/* ===== NEW FEATURE START: CINEMATIC TEAM ROSTER ===== */
+
+/* ── COUNTER RESET ───────────────────────────────────────────── */
+.ct-active {
+  counter-reset: pos-counter;
+}
+
+/* ── BANNER: 70vh cinematic hero ─────────────────────────────── */
+.ct-active .team-banner {
+  height: 70vh;
+  min-height: 480px;
+  max-height: 780px;
+}
+
+.ct-active .team-banner-img {
+  will-change: transform;
+  transition: none;
+}
+
+.ct-active .team-banner:hover .team-banner-img {
+  transform: none;
+}
+
+/* Multi-layer atmospheric overlay */
+.ct-active .team-banner-text {
+  background:
+    linear-gradient(to top, rgba(7,7,9,.97) 0%, rgba(7,7,9,.55) 38%, rgba(7,7,9,.08) 65%, transparent 100%),
+    linear-gradient(to right, rgba(7,7,9,.52) 0%, transparent 56%),
+    radial-gradient(ellipse at 75% 45%, rgba(167,31,69,.1) 0%, transparent 55%);
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: var(--sp-16, 4rem) var(--sp-12, 3rem) var(--sp-14, 3.5rem);
+  z-index: 1;
+}
+
+/* Top accent line */
+.ct-active .team-banner-text::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(197,47,90,.5) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+/* ВИШНЕВЕ watermark behind text */
+.ct-active .team-banner::after {
+  content: 'ВИШНЕВЕ';
+  position: absolute;
+  right: -1vw;
+  bottom: 8%;
+  font-family: var(--f-number, 'Bebas Neue', sans-serif);
+  font-size: 15vw;
+  line-height: 1;
+  color: rgba(255,255,255,.024);
+  letter-spacing: .05em;
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  z-index: 0;
+}
+
+/* Season eyebrow above main heading */
+.ct-active .team-banner-text h2 {
+  order: -1;
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: clamp(.65rem, 1.3vw, .82rem);
+  letter-spacing: .44em;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: rgba(197,47,90,.75);
+  margin: 0 0 var(--sp-2, .5rem);
+}
+
+/* Main heading */
+.ct-active .team-banner-text h1 {
+  font-size: clamp(3.5rem, 9vw, 6.5rem);
+  letter-spacing: .12em;
+  line-height: .92;
+}
+
+/* Subtitle */
+.ct-active .team-banner-text p {
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .7rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.36);
+  margin-top: var(--sp-3, .75rem);
+}
+
+/* ── POSITION LABEL: watermark counter, no side-stripe ──────────── */
+.ct-active .position-label {
+  counter-increment: pos-counter;
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3, .75rem);
+  padding: var(--sp-12, 3rem) var(--sp-8, 2rem) var(--sp-3, .75rem);
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .65rem;
+  font-weight: 500;
+  letter-spacing: .32em;
+  color: rgba(255,255,255,.55);
+  text-transform: uppercase;
+  overflow: visible;
+  max-width: 1200px;
+}
+
+/* Override side-stripe → large faint counter */
+.ct-active .position-label::before {
+  content: counter(pos-counter, decimal-leading-zero);
+  display: block;
+  width: auto;
+  height: auto;
+  background: none;
+  border-radius: 0;
+  font-family: var(--f-number, 'Bebas Neue', sans-serif);
+  font-size: 5.5rem;
+  line-height: .85;
+  letter-spacing: .02em;
+  color: rgba(255,255,255,.06);
+  flex-shrink: 0;
+}
+
+/* Full-width thin rule extending to the right */
+.ct-active .position-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,.08);
+  align-self: flex-end;
+  margin-bottom: .22em;
+}
+
+/* ── PLAYERS GRID ─────────────────────────────────────────────── */
+.ct-active .players-grid {
+  gap: var(--sp-5, 1.25rem);
+  padding: var(--sp-4, 1rem) var(--sp-8, 2rem) var(--sp-10, 2.5rem);
+}
+
+/* ── PLAYER CARD: 280×420 portrait, hover reveal ────────────────── */
+.ct-active .player-card {
+  width: 280px;
+  cursor: default;
+  perspective: none;
+}
+
+.ct-active .card-inner {
+  width: 280px;
+  height: 420px;
+  transform-style: flat;
+  transition:
+    transform .45s cubic-bezier(.16,1,.3,1),
+    box-shadow .3s ease,
+    opacity .3s ease;
+}
+
+/* Disable flip on click */
+.ct-active .player-card.flipped .card-inner {
+  transform: none;
+}
+
+/* ===== PLATFORM FIX START: hover-only on hover-capable devices ===== */
+/* Hover lift — only on real hover, never on iOS simulated hover */
+@media (hover: hover) {
+  .ct-active .player-card:hover .card-inner {
+    transform: translateY(-7px);
+    box-shadow: 0 28px 64px rgba(0,0,0,.65), 0 0 0 1px rgba(197,47,90,.2);
+  }
+}
+.ct-active .player-card.is-tapped .card-inner {
+  transform: translateY(-7px);
+  box-shadow: 0 28px 64px rgba(0,0,0,.65), 0 0 0 1px rgba(197,47,90,.2);
+}
+/* ===== PLATFORM FIX END ===== */
+
+/* Use opacity not backface-visibility for show/hide */
+.ct-active .card-front,
+.ct-active .card-back {
+  backface-visibility: visible;
+  -webkit-backface-visibility: visible;
+}
+
+.ct-active .card-front {
+  border: 1px solid rgba(255,255,255,.07);
+  border-top: 1px solid rgba(197,47,90,.22);
+}
+
+/* Full-bleed photo */
+.ct-active .card-front img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform .65s cubic-bezier(.16,1,.3,1);
+}
+
+/* ===== PLATFORM FIX START: hover-only on hover-capable devices ===== */
+@media (hover: hover) {
+  .ct-active .player-card:hover .card-front img { transform: scale(1.06); }
+}
+.ct-active .player-card.is-tapped .card-front img { transform: scale(1.06); }
+/* ===== PLATFORM FIX END ===== */
+
+/* Name — always visible at bottom */
+.ct-active .info {
+  position: absolute;
+  inset: auto 0 0;
+  flex: none;
+  background: linear-gradient(to top, rgba(7,7,9,.92) 0%, rgba(7,7,9,.58) 48%, transparent 100%);
+  padding: 3rem 1.25rem 1.25rem;
+  text-align: left;
+  z-index: 2;
+  justify-content: flex-end;
+  transition: opacity .28s ease;
+}
+
+/* ===== PLATFORM FIX START: hover-only on hover-capable devices ===== */
+@media (hover: hover) {
+  .ct-active .player-card:hover .info { opacity: 0; }
+}
+.ct-active .player-card.is-tapped .info { opacity: 0; }
+/* ===== PLATFORM FIX END ===== */
+
+.ct-active .info .name {
+  font-size: .95rem;
+  letter-spacing: .03em;
+}
+
+.ct-active .info .position {
+  font-size: .6rem;
+  letter-spacing: .2em;
+  color: rgba(197,47,90,.85);
+}
+
+/* Hide flip hint */
+.ct-active .card-front::after {
+  display: none;
+}
+
+/* Back: overlay reveal — positioned on top, opacity driven */
+.ct-active .card-back {
+  transform: none;
+  opacity: 0;
+  background: linear-gradient(
+    to top,
+    rgba(7,7,9,.97) 0%,
+    rgba(7,7,9,.84) 52%,
+    rgba(167,31,69,.18) 100%
+  );
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 1.75rem 1.25rem;
+  gap: .38rem;
+  z-index: 3;
+  pointer-events: none;
+  transition: opacity .35s cubic-bezier(.16,1,.3,1);
+}
+
+/* ===== PLATFORM FIX START: hover-only on hover-capable devices ===== */
+@media (hover: hover) {
+  .ct-active .player-card:hover .card-back {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+.ct-active .player-card.is-tapped .card-back {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* ===== PLATFORM FIX END ===== */
+
+.ct-active .card-back::before {
+  background: none;
+}
+
+.ct-active .card-back h3 {
+  font-size: 1rem;
+  letter-spacing: .02em;
+  text-align: left;
+  width: 100%;
+  margin-bottom: .2rem;
+}
+
+.ct-active .card-back .stars {
+  font-size: .8rem;
+  color: rgba(197,47,90,.9);
+  letter-spacing: .08em;
+  text-align: left;
+  width: 100%;
+}
+
+.ct-active .card-back div:not(.stars) {
+  font-size: .7rem;
+  color: rgba(255,255,255,.62);
+  text-align: left;
+  width: 100%;
+  letter-spacing: .04em;
+}
+
+/* ===== PLATFORM FIX START: spotlight only on hover-capable devices ===== */
+/* Spotlight: dim siblings while one card is hovered (desktop-only) */
+@media (hover: hover) {
+  .ct-active .players-grid:has(.player-card:hover) .player-card:not(:hover) .card-inner {
+    opacity: .46;
+    transform: scale(.968);
+  }
+}
+/* ===== PLATFORM FIX END ===== */
+
+/* ── MOBILE ────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .ct-active .team-banner {
+    height: 55vh;
+    min-height: 360px;
+  }
+
+  .ct-active .team-banner-text {
+    align-items: center;
+    padding: var(--sp-10, 2.5rem) var(--sp-6, 1.5rem) var(--sp-10, 2.5rem);
+  }
+
+  .ct-active .team-banner-text h1 {
+    font-size: clamp(2.8rem, 10vw, 4.5rem);
+  }
+
+  .ct-active .team-banner::after {
+    font-size: 22vw;
+    opacity: .018;
+  }
+
+  .ct-active .player-card { width: 200px; }
+  .ct-active .card-inner  { width: 200px; height: 300px; }
+
+  .ct-active .position-label {
+    padding: var(--sp-8, 2rem) var(--sp-4, 1rem) var(--sp-3, .75rem);
+  }
+
+  .ct-active .position-label::before { font-size: 3.8rem; }
+
+  .ct-active .players-grid {
+    padding: var(--sp-4, 1rem) var(--sp-4, 1rem) var(--sp-8, 2rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .ct-active .team-banner {
+    height: 48vh;
+    min-height: 300px;
+  }
+
+  .ct-active .player-card { width: 155px; }
+  .ct-active .card-inner  { width: 155px; height: 235px; }
+
+  .ct-active .position-label::before { font-size: 3rem; }
+
+  .ct-active .info .name { font-size: .82rem; }
+  .ct-active .card-back h3 { font-size: .88rem; }
+  .ct-active .card-back div:not(.stars) { font-size: .65rem; }
+}
+
+/* ===== NEW FEATURE END: CINEMATIC TEAM ROSTER ===== */

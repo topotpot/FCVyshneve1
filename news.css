@@ -1,0 +1,397 @@
+/* ============================================================
+   NEWS PAGE — page-specific styles
+   Global styles (header, footer, reset, buttons) → styles.css
+   ============================================================ */
+
+/* Page top offset for fixed header */
+body {
+  padding-top: var(--header-h, 70px);
+  background: var(--c-base, #070709);
+  color: var(--c-white, #f5f5f7);
+}
+
+/* ── PAGE HERO ───────────────────────────────────────────────── */
+.page-hero {
+  background: var(--c-layer, #111114);
+  border-bottom: 1px solid rgba(255,255,255,.05);
+  padding: var(--sp-16) var(--sp-6) var(--sp-12);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 90%, rgba(167,31,69,.1) 0%, transparent 60%);
+}
+.page-hero h1 {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  color: var(--c-white, #fff);
+  position: relative;
+  z-index: 1;
+  margin-bottom: var(--sp-2);
+}
+.page-hero p {
+  color: rgba(255,255,255,.6);
+  font-size: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── MODAL ────────────────────────────────────────────────────── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(8px);
+  justify-content: center;
+  align-items: center;
+  z-index: var(--z-modal, 2000);
+  padding: var(--sp-6);
+}
+.modal-overlay[style*="flex"] { display: flex; }
+
+.modal {
+  background: var(--c-surface, #17171c);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--r-lg, 20px);
+  max-width: 580px;
+  width: 100%;
+  padding: var(--sp-10) var(--sp-8);
+  position: relative;
+  box-shadow: 0 24px 80px rgba(0,0,0,.6);
+  animation: modalIn .3s cubic-bezier(.16,1,.3,1);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(.95) translateY(16px); }
+  to   { opacity: 1; transform: scale(1)  translateY(0); }
+}
+
+.modal h3 {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: 1.4rem;
+  color: var(--c-white, #f5f5f7);
+  margin-bottom: var(--sp-4);
+  padding-right: var(--sp-8);
+  line-height: 1.3;
+}
+.modal p {
+  font-size: .95rem;
+  line-height: 1.7;
+  color: var(--c-muted, #9ca0aa);
+}
+
+.close-modal {
+  position: absolute;
+  top: var(--sp-4);
+  right: var(--sp-5);
+  font-size: 1.6rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(245,245,247,.35);
+  transition: color .2s ease;
+}
+.close-modal:hover { color: var(--c-maroon, #a71f45); }
+
+/* ── FEATURED NEWS ────────────────────────────────────────────── */
+.featured-news {
+  padding: var(--sp-16) var(--sp-6);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.featured-news > h2 {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  color: var(--c-white, #fff);
+  margin-bottom: var(--sp-8);
+  position: relative;
+  display: inline-block;
+}
+.featured-news > h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: var(--c-maroon, #a71f45);
+  border-radius: 2px;
+}
+
+.featured-card {
+  background: var(--c-surface, #17171c);
+  border: 1px solid var(--c-border, rgba(255,255,255,.055));
+  border-top: 1px solid rgba(197,47,90,.15);
+  border-radius: var(--r-lg, 20px);
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0,0,0,.5);
+  transition: transform var(--tr-spring, .6s), box-shadow var(--tr-spring, .6s), border-color var(--tr-base, .3s);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  will-change: transform;
+}
+/* ===== NEWS UX REWORK START =====
+   Editorial hover: glow + border + shadow only. No card movement, no
+   image zoom. Matches The Athletic / BBC Sport / UEFA editorial feel. */
+.featured-card:hover {
+  border-color: rgba(197,47,90,.28);
+  border-top-color: rgba(197,47,90,.36);
+  box-shadow: 0 32px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(197,47,90,.15), 0 0 48px rgba(197,47,90,.1);
+}
+.featured-card > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+/* ===== NEWS UX REWORK END ===== */
+
+.featured-content {
+  padding: var(--sp-8) var(--sp-8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.featured-content .tag {
+  display: inline-block;
+  background: rgba(167,31,69,.1);
+  color: var(--c-maroon, #a71f45);
+  padding: var(--sp-1) var(--sp-3);
+  font-size: .72rem;
+  font-weight: 700;
+  border-radius: var(--r-pill, 999px);
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  margin-bottom: var(--sp-3);
+}
+
+.featured-content .date {
+  color: rgba(255,255,255,.4);
+  font-size: .82rem;
+  margin-left: var(--sp-3);
+  display: inline;
+}
+
+.featured-content h3 {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: 1.35rem;
+  color: var(--c-white, #fff);
+  line-height: 1.3;
+  margin: var(--sp-4) 0 var(--sp-3);
+}
+
+.featured-content .summary {
+  color: var(--c-muted, #9ca0aa);
+  font-size: .92rem;
+  line-height: 1.7;
+}
+
+.featured-content .author {
+  font-size: .82rem;
+  color: rgba(245,245,247,.35);
+  margin-top: var(--sp-3);
+}
+
+.news-details { display: none; }
+
+.toggle-details {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-5);
+  padding: var(--sp-2) var(--sp-5);
+  background: var(--c-maroon, #a71f45);
+  color: #fff;
+  border: none;
+  border-radius: var(--r-pill, 999px);
+  font-size: .82rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--tr-base, .3s), transform var(--tr-base, .3s);
+}
+.toggle-details:hover {
+  background: var(--c-rose, #da3866);
+  transform: translateY(-2px);
+}
+
+/* ── ALL NEWS ─────────────────────────────────────────────────── */
+.all-news {
+  padding: var(--sp-6) var(--sp-6) var(--sp-16);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.all-news > h2 {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: clamp(1.4rem, 3.5vw, 2rem);
+  color: var(--c-white, #fff);
+  margin-bottom: var(--sp-8);
+  position: relative;
+  display: inline-block;
+}
+.all-news > h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: var(--c-maroon, #a71f45);
+  border-radius: 2px;
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: var(--sp-6);
+}
+
+/* Override homepage .news-card style for the news page grid cards */
+.news-grid .news-card {
+  background: var(--c-surface, #17171c);
+  border: 1px solid var(--c-border, rgba(255,255,255,.055));
+  border-top: 1px solid rgba(197,47,90,.12);
+  border-radius: var(--r-lg, 20px);
+  box-shadow: 0 8px 32px rgba(0,0,0,.4);
+  overflow: hidden;
+  position: relative;
+  height: auto;
+  display: block;
+  color: inherit;
+  /* ===== NEWS UX REWORK START =====
+     Transition limited to border + background + shadow. No transform. */
+  transition:
+    box-shadow var(--tr-base, .3s) ease,
+    border-color var(--tr-base, .3s) ease,
+    background var(--tr-base, .3s) ease;
+  /* ===== NEWS UX REWORK END ===== */
+  cursor: default;
+  padding: 0;
+}
+.news-grid .news-card::before { display: none; }
+.news-grid .news-card::after { display: none; }
+
+/* ===== NEWS UX REWORK START =====
+   Editorial hover: subtle border + shadow + background tint. No motion. */
+.news-grid .news-card:hover {
+  background: var(--c-surface-2, #1e1e25);
+  border-color: rgba(197,47,90,.25);
+  border-top-color: rgba(197,47,90,.35);
+  box-shadow: 0 24px 64px rgba(0,0,0,.5), 0 0 0 1px rgba(197,47,90,.12), 0 0 40px rgba(197,47,90,.08);
+}
+
+.news-grid .news-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+/* No img hover transform — image stays still per editorial spec. */
+/* ===== NEWS UX REWORK END ===== */
+
+.news-grid .news-card .date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .78rem;
+  color: rgba(255,255,255,.4);
+  padding: var(--sp-3) var(--sp-4) 0;
+}
+
+.news-grid .news-card h4 {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: 1rem;
+  color: var(--c-white, #fff);
+  padding: var(--sp-2) var(--sp-4);
+  line-height: 1.4;
+  margin: 0;
+}
+
+.news-grid .news-card p {
+  font-size: .88rem;
+  color: var(--c-muted, #9ca0aa);
+  padding: 0 var(--sp-4);
+  line-height: 1.6;
+}
+
+.news-grid .news-card .author {
+  font-size: .78rem;
+  color: rgba(245,245,247,.32);
+  padding: var(--sp-2) var(--sp-4) var(--sp-4);
+  display: block;
+}
+
+.news-grid .news-card .toggle-details {
+  margin: 0 var(--sp-4) var(--sp-4);
+  font-size: .78rem;
+  padding: var(--sp-1) var(--sp-4);
+}
+
+/* ── LOAD MORE ────────────────────────────────────────────────── */
+.load-more-container {
+  text-align: center;
+  padding: var(--sp-10) var(--sp-6);
+}
+
+#loadMoreBtn {
+  padding: var(--sp-3) var(--sp-10);
+  background: var(--c-maroon, #a71f45);
+  color: #fff;
+  font-family: var(--f-body, 'Montserrat', sans-serif);
+  font-size: .85rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  border: none;
+  border-radius: var(--r-pill, 999px);
+  cursor: pointer;
+  transition: background var(--tr-base, .3s), transform var(--tr-base, .3s), box-shadow var(--tr-base, .3s);
+  box-shadow: 0 6px 24px rgba(167,31,69,.35);
+}
+#loadMoreBtn:hover {
+  background: var(--c-rose, #da3866);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 36px rgba(167,31,69,.5);
+}
+#loadMoreBtn:disabled {
+  background: #ccc;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .featured-card {
+    grid-template-columns: 1fr;
+  }
+  .featured-card > img {
+    height: 220px;
+  }
+  .featured-content {
+    padding: var(--sp-6);
+  }
+  .featured-news,
+  .all-news {
+    padding-left: var(--sp-4);
+    padding-right: var(--sp-4);
+  }
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-hero { padding: var(--sp-12) var(--sp-4) var(--sp-10); }
+  .modal { padding: var(--sp-6); }
+  .featured-content h3 { font-size: 1.1rem; }
+}

@@ -1,0 +1,173 @@
+/* ============================================================
+   TEAMS PAGE — page-specific styles
+   Global styles → styles.css
+   ============================================================ */
+
+body {
+  padding-top: var(--header-h, 70px);
+  background: var(--c-base, #070709);
+  color: var(--c-white, #f5f5f7);
+}
+
+/* ── HERO SECTION ────────────────────────────────────────────── */
+.section.dark {
+  background: var(--c-layer, #111114);
+  color: var(--c-white, #f5f5f7);
+  text-align: center;
+  padding: var(--sp-20, 5rem) var(--sp-6, 1.5rem) var(--sp-16, 4rem);
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255,255,255,.05);
+}
+.section.dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 90%, rgba(167,31,69,.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.teams-title {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  color: var(--c-white, #fff);
+  margin-bottom: var(--sp-4, 1rem);
+  position: relative;
+  z-index: 1;
+}
+
+.section.dark p {
+  color: var(--c-muted, #9ca0aa);
+  font-size: 1.05rem;
+  max-width: 520px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── TEAM CARDS SECTION ──────────────────────────────────────── */
+.section.light {
+  background: var(--c-base, #070709);
+  padding: var(--sp-16, 4rem) var(--sp-6, 1.5rem) var(--sp-20, 5rem);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-6, 1.5rem);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ── TEAM CARD ───────────────────────────────────────────────── */
+.team-card-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  flex: 1 1 280px;
+  max-width: 340px;
+}
+
+.team-card {
+  background: var(--c-surface, #17171c);
+  border: 1px solid var(--c-border, rgba(255,255,255,.055));
+  border-top: 1px solid rgba(197,47,90,.12);
+  border-radius: var(--r-lg, 20px);
+  box-shadow: 0 8px 40px rgba(0,0,0,.45);
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--tr-spring, .6s), box-shadow var(--tr-spring, .6s), border-color var(--tr-base, .3s), background var(--tr-base, .3s);
+  will-change: transform;
+}
+.team-card:hover {
+  transform: translateY(-10px);
+  background: var(--c-surface-2, #1e1e25);
+  border-color: rgba(197,47,90,.28);
+  border-top-color: rgba(197,47,90,.38);
+  box-shadow: 0 24px 72px rgba(0,0,0,.55), 0 0 0 1px rgba(197,47,90,.14), 0 0 48px rgba(197,47,90,.1);
+}
+
+.team-card-top {
+  background: linear-gradient(135deg, var(--c-rose, #da3866), var(--c-maroon, #a71f45));
+  padding: var(--sp-8, 2rem) var(--sp-6, 1.5rem);
+  color: var(--c-white, #fff);
+  text-align: center;
+  position: relative;
+  min-height: 130px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.team-card-top::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at top, rgba(255,255,255,.12) 0%, transparent 65%);
+}
+
+.team-card-top .badge {
+  position: absolute;
+  top: var(--sp-3, .75rem);
+  right: var(--sp-3, .75rem);
+  background: rgba(255,255,255,.2);
+  color: var(--c-white, #fff);
+  border-radius: var(--r-pill, 999px);
+  padding: var(--sp-1, .25rem) var(--sp-3, .75rem);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+}
+
+.team-card-top .icon {
+  font-size: 2.5rem;
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.team-card-bottom {
+  padding: var(--sp-6, 1.5rem);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.team-card-bottom h3 {
+  font-family: var(--f-display, 'Russo One', sans-serif);
+  font-size: 1.15rem;
+  color: var(--c-white, #fff);
+  margin-bottom: var(--sp-3, .75rem);
+}
+.team-card-bottom p {
+  font-size: .88rem;
+  color: var(--c-muted, #9ca0aa);
+  line-height: 1.6;
+  margin-bottom: var(--sp-2, .5rem);
+}
+.team-card-bottom p:last-of-type {
+  margin-bottom: var(--sp-5, 1.25rem);
+}
+.team-card-bottom span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2, .5rem);
+  color: var(--c-maroon, #a71f45);
+  font-weight: 700;
+  font-size: .85rem;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  margin-top: auto;
+  transition: gap var(--tr-base, .3s);
+}
+.team-card:hover .team-card-bottom span { gap: var(--sp-3, .75rem); }
+.team-card-bottom span::after { content: '→'; }
+
+/* ── RESPONSIVE ───────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .section.light {
+    flex-direction: column;
+    align-items: center;
+    padding: var(--sp-10, 2.5rem) var(--sp-4, 1rem) var(--sp-16, 4rem);
+  }
+  .team-card-link { max-width: 100%; flex: none; width: 100%; }
+  .section.dark { padding: var(--sp-12, 3rem) var(--sp-4, 1rem) var(--sp-10, 2.5rem); }
+}

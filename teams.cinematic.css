@@ -1,0 +1,102 @@
+/* ================================================================
+   CINEMATIC TEAM HUB — teams.cinematic.css
+   FC Vyshneve
+
+   Scoped entirely to body.cth-active — zero output without it.
+   Remove body.cth-active → instant full rollback.
+   ================================================================ */
+
+/* ===== NEW FEATURE START: CINEMATIC TEAM HUB ===== */
+
+/* ── HERO: КОМАНДИ watermark ──────────────────────────────────── */
+.cth-active .section.dark::after {
+  content: 'КОМАНДИ';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--f-number, 'Bebas Neue', sans-serif);
+  font-size: 11vw;
+  white-space: nowrap;
+  color: rgba(255,255,255,.022);
+  letter-spacing: .07em;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
+/* Elevate text above watermark */
+.cth-active .teams-title,
+.cth-active .section.dark p {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── TEAM CARD TOP: photographic ─────────────────────────────── */
+.cth-active .team-card-top {
+  background-size: cover;
+  background-position: center;
+  min-height: 220px;
+}
+
+/* Disable old gradient shine */
+.cth-active .team-card-top::before {
+  display: none;
+}
+
+/* Cinematic overlay on photo */
+.cth-active .team-card-top::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    165deg,
+    rgba(7,7,9,.1) 0%,
+    rgba(7,7,9,.42) 55%,
+    rgba(167,31,69,.62) 100%
+  );
+  transition: background .4s ease;
+  z-index: 1;
+}
+
+.cth-active .team-card:hover .team-card-top::after {
+  background: linear-gradient(
+    165deg,
+    rgba(7,7,9,.05) 0%,
+    rgba(7,7,9,.28) 50%,
+    rgba(197,47,90,.76) 100%
+  );
+}
+
+/* Badge and icon z-index relative to overlay */
+.cth-active .team-card-top .badge {
+  position: relative;
+  z-index: 2;
+  background: rgba(0,0,0,.38);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* Hide FA icon — photo is the visual now */
+.cth-active .team-card-top .icon {
+  display: none;
+}
+
+/* Bottom text: slight upgrade */
+.cth-active .team-card-bottom h3 {
+  font-size: 1.2rem;
+  letter-spacing: .02em;
+}
+
+/* ── MOBILE ────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .cth-active .section.dark::after {
+    font-size: 18vw;
+  }
+
+  .cth-active .team-card-top {
+    min-height: 180px;
+  }
+}
+
+/* ===== NEW FEATURE END: CINEMATIC TEAM HUB ===== */

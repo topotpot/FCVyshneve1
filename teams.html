@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Наші команди — ФК Вишневе</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&family=Russo+One&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="teams.css" />
+  <link rel="stylesheet" href="header.cinematic.css" />
+  <link rel="stylesheet" href="teams.cinematic.css" />
+
+  <!-- CMS content layer -->
+  <script src="services/config.js"></script>
+  <script src="services/ui.js"></script>
+  <script src="services/teams.js"></script>
+
+  <!-- Cinematic Header Module -->
+  <script src="modules/cinematicHeader.js" defer></script>
+  <script src="modules/cinematicTeamHub.js" defer></script>
+</head>
+
+<body>
+
+<!-- ── MENU BACKDROP ─────────────────────────────────────────── -->
+<div class="menu-backdrop" id="menuBackdrop"></div>
+
+<!-- ── HEADER ────────────────────────────────────────────────── -->
+<header class="header" id="mainHeader">
+  <div class="burger-container">
+    <a href="index.html" class="logo-block">
+      <img src="img/logo.png" alt="Логотип ФК Вишневе" class="club-logo" />
+      <span class="club-name">ФК Вишневе</span>
+    </a>
+    <div class="burger" id="burger" aria-label="Відкрити меню" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </div>
+    <nav class="menu" id="menu">
+      <ul>
+        <li><a href="index.html">Головна</a></li>
+        <li><a href="about.html">Про нас</a></li>
+        <li class="has-submenu">
+          <div class="menu-item">
+            <a href="teams.html" class="nav-active">Команди</a>
+            <span class="arrow">&#9662;</span>
+          </div>
+          <ul class="submenu">
+            <li><a href="team1.html?team=main">Головна команда</a></li>
+            <li><a href="team1.html?team=youth">Молодіжка</a></li>
+            <li><a href="team1.html?team=u-19">U-19</a></li>
+          </ul>
+        </li>
+        <li><a href="matches.html">Матчі</a></li>
+        <li><a href="news.html">Новини</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<!-- ── HERO ───────────────────────────────────────────────────── -->
+<section class="section dark">
+  <h2 class="teams-title">Наші команди</h2>
+  <p>Познайомтеся з усіма командами ФК Вишневе — від основного складу до юних талантів</p>
+</section>
+
+<!-- ── TEAM CARDS (populated by CMS bootstrap) ────────────────── -->
+<section class="section light" id="teamsList"></section>
+<div id="teamsState"></div>
+
+<!-- ── SCRIPTS ────────────────────────────────────────────────── -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── Navigation ───────────────────────────────── */
+  const burger   = document.getElementById('burger');
+  const menu     = document.getElementById('menu');
+  const backdrop = document.getElementById('menuBackdrop');
+  const header   = document.getElementById('mainHeader');
+
+  function openMenu() {
+    menu.classList.add('active');
+    burger.classList.add('active');
+    backdrop.classList.add('active');
+    burger.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeMenu() {
+    menu.classList.remove('active');
+    burger.classList.remove('active');
+    backdrop.classList.remove('active');
+    burger.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  burger.addEventListener('click', () => menu.classList.contains('active') ? closeMenu() : openMenu());
+  backdrop.addEventListener('click', closeMenu);
+  menu.querySelectorAll('a').forEach(l => l.addEventListener('click', closeMenu));
+
+  document.querySelectorAll('.has-submenu .arrow').forEach(arrow => {
+    arrow.addEventListener('click', e => {
+      e.stopPropagation();
+      arrow.closest('.has-submenu').classList.toggle('open');
+    });
+  });
+
+  let lastY = 0;
+  window.addEventListener('scroll', () => {
+    const y = window.scrollY;
+    header.classList.toggle('hide',     y > lastY && y > 60);
+    header.classList.toggle('scrolled', y > 20);
+    lastY = y <= 0 ? 0 : y;
+  }, { passive: true });
+
+  /* ── CMS bootstrap ──────────────────────────────────────────── */
+  // ===== NEW FEATURE START: CMS CONTENT LAYER =====
+  const list    = document.getElementById('teamsList');
+  const stateEl = document.getElementById('teamsState');
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function renderTeamCard(team) {
+    const a = document.createElement('a');
+    a.className = 'team-card-link';
+    a.href = 'team1.html?team=' + encodeURIComponent(team.slug || '');
+
+    // ===== TEAM HERO IMAGE FIX START =====
+    // Same source of truth as team1.html banner: always paint team.cover.
+    // mapTeam's pickCover guarantees a usable URL even when the editor
+    // hasn't uploaded coverImage (cascades coverImage → logo → static).
+    const bg = team.cover
+      ? ' style="background-image:url(\'' + esc(team.cover) + '\')"'
+      : '';
+    // ===== TEAM HERO IMAGE FIX END =====
+
+    a.innerHTML =
+      '<div class="team-card">' +
+        '<div class="team-card-top"' + bg + '>' +
+          '<span class="badge">Сезон 2025/26</span>' +
+          '<div class="icon"><i class="fa-solid fa-shield-halved"></i></div>' +
+        '</div>' +
+        '<div class="team-card-bottom">' +
+          '<h3>' + esc(team.name) + '</h3>' +
+          '<p>' + esc(team.shortDescription || '') + '</p>' +
+          (team.foundedYear ? '<p>Заснована ' + esc(team.foundedYear) + '</p>' : '') +
+          '<span>Детальніше</span>' +
+        '</div>' +
+      '</div>';
+    return a;
+  }
+
+  (async function bootstrapTeams() {
+    if (!list) return;
+    if (!window.FCV || !FCV.TeamsService) {
+      FCV.UI && FCV.UI.error(stateEl, 'CMS-шар не завантажено');
+      return;
+    }
+    FCV.UI.loading(stateEl, 'Завантажуємо команди…');
+    try {
+      const teams = await FCV.TeamsService.getTeams({ pageSize: 50 });
+      if (!teams.length) {
+        FCV.UI.empty(stateEl, 'Поки що немає команд', 'Додайте команду у Strapi');
+        return;
+      }
+      FCV.UI.clear(stateEl);
+      const frag = document.createDocumentFragment();
+      teams.forEach(t => frag.appendChild(renderTeamCard(t)));
+      list.appendChild(frag);
+    } catch (e) {
+      FCV.UI.error(stateEl, 'Не вдалося завантажити команди', e);
+    }
+  })();
+  // ===== NEW FEATURE END: CMS CONTENT LAYER =====
+
+})();
+</script>
+
+</body>
+</html>

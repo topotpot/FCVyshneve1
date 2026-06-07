@@ -1,0 +1,371 @@
+/* ================================================================
+   ADVANCED NEWS & MATCH FILTER SYSTEM — nms.advanced.css
+   FC Vyshneve
+
+   Scoped entirely to body.naf-active.
+   Remove body.naf-active → instant full rollback.
+   ================================================================ */
+
+/* ===== NEW FEATURE START: ADVANCED NEWS & MATCH FILTER SYSTEM ===== */
+
+/* ── HIDE LEGACY FILTER UI ────────────────────────────────────── */
+.naf-active .year-filter,
+.naf-active .nms-filters,
+.naf-active .nms-empty {
+  display: none !important;
+}
+
+/* ── FILTER WRAP & CONTAINER ─────────────────────────────────── */
+.naf-filters-wrap {
+  padding: var(--sp-5, 1.25rem) var(--sp-6, 1.5rem) var(--sp-3, .75rem);
+  max-width: 940px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.naf-filters {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4, 1rem);
+  padding: .42rem .55rem .42rem 1rem;
+  background: rgba(8, 8, 12, .55);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, .06);
+  border-top: 1px solid rgba(197, 47, 90, .14);
+  border-radius: 999px;
+  box-shadow:
+    0 10px 32px rgba(0, 0, 0, .45),
+    inset 0 1px 0 rgba(255, 255, 255, .04);
+  position: relative;
+}
+
+/* Subtle ambient top accent */
+.naf-filters::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 58%;
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent, rgba(197, 47, 90, .42), transparent);
+  pointer-events: none;
+}
+
+.naf-filters-eyebrow {
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .54rem;
+  font-weight: 500;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, .34);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.naf-pills {
+  display: flex;
+  gap: .25rem;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x proximity;
+}
+
+.naf-pills::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── PILL ─────────────────────────────────────────────────────── */
+.naf-pill {
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .6rem;
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  padding: .56rem 1.15rem;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, .44);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  flex-shrink: 0;
+  scroll-snap-align: center;
+  transition:
+    color .32s ease,
+    background .32s ease,
+    border-color .32s ease,
+    box-shadow .4s ease,
+    transform .25s ease;
+}
+
+/* Cinematic underline reveal */
+.naf-pill::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 0;
+  height: 1px;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent 0%, rgba(197, 47, 90, .95) 50%, transparent 100%);
+  transition: width .48s cubic-bezier(.16, 1, .3, 1);
+  pointer-events: none;
+}
+
+.naf-pill:hover {
+  color: rgba(230, 121, 151, .92);
+}
+
+.naf-pill:hover::after {
+  width: 62%;
+}
+
+.naf-pill.is-active {
+  background: linear-gradient(135deg, rgba(167, 31, 69, .28) 0%, rgba(167, 31, 69, .14) 100%);
+  color: #fff;
+  border-color: rgba(197, 47, 90, .45);
+  box-shadow:
+    0 0 24px rgba(167, 31, 69, .22),
+    inset 0 1px 0 rgba(255, 255, 255, .06);
+}
+
+.naf-pill.is-active::after {
+  width: 76%;
+  background: linear-gradient(90deg, transparent 0%, rgba(197, 47, 90, 1) 50%, transparent 100%);
+}
+
+/* ── EMPTY STATE ─────────────────────────────────────────────── */
+.naf-empty {
+  display: none;
+  padding: var(--sp-12, 3rem) var(--sp-6, 1.5rem);
+  text-align: center;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.naf-empty.is-visible {
+  display: block;
+}
+
+.naf-empty-icon {
+  font-size: 1.5rem;
+  color: rgba(167, 31, 69, .45);
+  margin-bottom: var(--sp-3, .75rem);
+}
+
+.naf-empty-title {
+  font-family: var(--f-number, 'Bebas Neue', sans-serif);
+  font-size: 1.55rem;
+  letter-spacing: .04em;
+  color: rgba(255, 255, 255, .72);
+  margin-bottom: var(--sp-2, .5rem);
+}
+
+.naf-empty-text {
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .66rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  color: rgba(255, 255, 255, .38);
+  text-transform: uppercase;
+}
+
+/* ── EDITORIAL DATE DISPLAY ──────────────────────────────────── */
+.naf-date {
+  display: inline-flex;
+  align-items: center;
+  gap: .42rem;
+  font-family: var(--f-heading, 'Oswald', sans-serif);
+  font-size: .56rem;
+  font-weight: 500;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.naf-date-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .22);
+  flex-shrink: 0;
+  transition: box-shadow .35s ease;
+}
+
+.naf-date[data-tone="today"] .naf-date-dot {
+  background: #6ae383;
+  box-shadow: 0 0 8px rgba(106, 227, 131, .5);
+}
+
+.naf-date[data-tone="upcoming"] .naf-date-dot {
+  background: #c52f5a;
+  box-shadow: 0 0 8px rgba(197, 47, 90, .5);
+}
+
+.naf-date[data-tone="recent"] .naf-date-dot {
+  background: rgba(230, 121, 151, .72);
+}
+
+.naf-date[data-tone="past"] .naf-date-dot {
+  background: rgba(255, 255, 255, .22);
+}
+
+.naf-date[data-tone="far"] .naf-date-dot {
+  background: rgba(255, 255, 255, .15);
+}
+
+.naf-date-label {
+  color: rgba(245, 245, 247, .92);
+}
+
+.naf-date-sep {
+  color: rgba(255, 255, 255, .18);
+  letter-spacing: 0;
+  font-weight: 400;
+}
+
+.naf-date-abs {
+  color: rgba(255, 255, 255, .42);
+  font-weight: 400;
+}
+
+.naf-date-abs--primary {
+  color: rgba(245, 245, 247, .85);
+  font-weight: 500;
+}
+
+.naf-date-time {
+  color: rgba(255, 255, 255, .42);
+  font-weight: 400;
+}
+
+/* ── DATE INTEGRATION: NEWS GRID ─────────────────────────────── */
+.naf-active .news-grid .news-card .date {
+  display: block;
+}
+.naf-active .news-grid .news-card .date .naf-date {
+  display: inline-flex;
+}
+
+/* ── DATE INTEGRATION: FEATURED CARD ─────────────────────────── */
+.naf-active .featured-card .date {
+  margin-left: var(--sp-3, .75rem);
+}
+
+/* ── DATE INTEGRATION: MATCH CARDS ───────────────────────────── */
+.naf-active .cm-kick-off {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+}
+.naf-active .cm-kick-off .naf-date {
+  font-size: .52rem;
+  letter-spacing: .14em;
+}
+
+/* ── NEWS GRID ALIGNMENT FIX ─────────────────────────────────── */
+.naf-active .news-grid {
+  align-items: stretch;
+  grid-auto-rows: 1fr;
+}
+
+.naf-active .news-grid .news-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.naf-active .news-grid .news-card h4 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(1.22rem * 1.15 * 2);
+}
+
+.naf-active .news-grid .news-card p {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: calc(.82rem * 1.6 * 2);
+}
+
+.naf-active .news-grid .news-card .toggle-details {
+  margin-top: auto;
+}
+
+/* ── MATCH CARD ALIGNMENT FIX ────────────────────────────────── */
+.naf-active .cm-focal {
+  min-width: 120px;
+}
+
+.naf-active .cm-hero-inner .cm-focal {
+  min-width: 160px;
+}
+
+.naf-active .cm-club {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ── HIDDEN CARDS (filter state) ─────────────────────────────── */
+.naf-active .naf-hidden {
+  display: none !important;
+}
+
+/* ── MOBILE ──────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .naf-filters-wrap {
+    padding: var(--sp-4, 1rem) var(--sp-4, 1rem);
+  }
+
+  .naf-filters {
+    padding: .36rem .42rem;
+    gap: .3rem;
+  }
+
+  .naf-filters-eyebrow {
+    display: none;
+  }
+
+  .naf-pill {
+    padding: .48rem .95rem;
+    font-size: .55rem;
+    letter-spacing: .18em;
+  }
+
+  .naf-date {
+    font-size: .54rem;
+    gap: .36rem;
+  }
+
+  .naf-active .cm-focal {
+    min-width: 86px;
+  }
+
+  .naf-active .cm-hero-inner .cm-focal {
+    min-width: 110px;
+  }
+}
+
+@media (max-width: 480px) {
+  .naf-active .cm-club {
+    white-space: normal;
+  }
+
+  .naf-active .news-grid .news-card .date {
+    font-size: .54rem;
+  }
+}
+
+/* ===== NEW FEATURE END: ADVANCED NEWS & MATCH FILTER SYSTEM ===== */
